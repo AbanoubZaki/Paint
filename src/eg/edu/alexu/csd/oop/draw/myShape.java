@@ -8,15 +8,15 @@ public class myShape implements Shape{
 	/**
 	 * center of the shape.
 	 */
-	Point position = new Point(0,0);
+	private Point position = new Point(0,0);
 	/**
 	 * frame color of the shape.
 	 */
-	Color frameColor = new Color(0);
+	private Color frameColor = new Color(0);
 	/**
 	 * fill color of the shape.
 	 */
-	Color fillColor = new Color(0);
+	private Color fillColor = new Color(0);
 	
 	public void setPosition(java.awt.Point position) {
 		this.position = position;

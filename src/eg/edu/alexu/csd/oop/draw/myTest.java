@@ -17,6 +17,7 @@ public class myTest {
 		d.undo();
 		d.undo();
 		d.undo();
+		
 		System.out.println(d.getShapes().length);
 		
 	}

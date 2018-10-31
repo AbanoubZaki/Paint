@@ -8,7 +8,7 @@ public class myShape implements Shape{
 	/**
 	 * center of the shape.
 	 */
-	Point position = new Point();
+	Point position = new Point(0,0);
 	/**
 	 * frame color of the shape.
 	 */

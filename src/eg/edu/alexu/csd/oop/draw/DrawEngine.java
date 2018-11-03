@@ -144,6 +144,16 @@ public class DrawEngine implements DrawingEngine{
 		
 	}
 
+	public void saveXml() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void saveJson() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/**
 	 * read from the selected file and refresh the screen.
 	 */

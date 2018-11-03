@@ -1,6 +1,7 @@
 package eg.edu.alexu.csd.oop.draw;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 
 public class myShape implements Shape{
@@ -25,7 +26,9 @@ public class myShape implements Shape{
     public java.awt.Point getPosition() {
 		return position;
 	}
-
+    
+    java.awt.Graphics canvas;
+    
     /**
      * contains each main property of the shape.
      * implemented in each class extending shape
@@ -42,6 +45,9 @@ public class myShape implements Shape{
     	this.frameColor = color;
 	}
     public java.awt.Color getColor() {
+    	if (frameColor.equals(null)) {
+    		return null;
+    	}
 		return frameColor;
 	}
 
@@ -50,6 +56,9 @@ public class myShape implements Shape{
 	}
     
     public java.awt.Color getFillColor() {
+    	if (fillColor.equals(null)) {
+    		return null;
+    	}
 		return fillColor;
 	}
 
@@ -68,4 +77,11 @@ public class myShape implements Shape{
 		return null;
 	} // create a deep clone of the shape
     
+    public void setCanvas(Graphics canvas) {
+		this.canvas = canvas;
+	}
+    
+    public Graphics getCanavas () {
+    	return canvas;
+    }
 }

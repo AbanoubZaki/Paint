@@ -1,35 +1,51 @@
 package myShapes;
 
-import java.awt.Graphics;
+import java.awt.Point;
+import java.util.HashMap;
 import java.util.Map;
 
 import eg.edu.alexu.csd.oop.draw.myShape;
 
 public class ellipse extends myShape {
 
-	int width = 0,height = 0;
-	Map<String, Double> properties;
+	private Double horizontalRadius = 0.0 ;
 	
-	public ellipse (int width, int height) {
+	private Double verticalRadius = 0.0 ;
+	
+	/**
+     * properties of the shape.
+     */
+    private Map<String, Double> properties = new HashMap<>();
+    
+	public ellipse(Point position, Double horizontalRadius, Double verticalRadius, java.awt.Graphics canvas) {
 		// TODO Auto-generated constructor stub
-		this.width = width;
-		this.height = height;
+		this.horizontalRadius = horizontalRadius;
+		this.verticalRadius = verticalRadius;
+		setPosition(position);
+		setProperties(properties);
+		setCanvas(canvas);
+		draw(canvas);
 	}
 	
 	@Override
-	public void draw(Graphics canvas) {
+	public void draw(java.awt.Graphics canvas) {
 		// TODO Auto-generated method stub
-		canvas.drawOval(getPosition().x, getPosition().y, width, height);
+		canvas.drawOval(getPosition().x, getPosition().y, (int) Math.round(horizontalRadius), (int) Math.round(verticalRadius));
+	}
+	
+	@Override
+	public void setProperties(Map<String, Double> properties) {
+		// TODO Auto-generated method stub
+		this.properties.put("horizontalRadius", horizontalRadius);
+		this.properties.put("verticalRadius", verticalRadius);
 	}
 	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
-		ellipse copy = new ellipse(width, height);
-		copy.setColor(this.getColor());
-		copy.setFillColor(this.getFillColor());
-		copy.setPosition(this.getPosition());
-		copy.setProperties(this.getProperties());
+		ellipse copy = new ellipse(getPosition(), horizontalRadius, verticalRadius, getCanavas());
+		copy.setColor(getColor());
+		copy.setFillColor(getFillColor());
 		return copy;
 	}
 }

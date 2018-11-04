@@ -17,19 +17,18 @@ public class lineSegment extends myShape {
      */
     private Map<String, Double> properties = new HashMap<>();
     
-	public lineSegment (Point firstPoint, Point secondPoint, java.awt.Graphics canvas) {
+	public lineSegment (Point firstPoint, Point secondPoint) {
 		// TODO Auto-generated constructor stub
 		this.firstPoint = firstPoint;
 		this.secondPoint = secondPoint;
 		setPosition(firstPoint);
 		setProperties(properties);
-		setCanvas(canvas);
-		draw(canvas);
 	}
 	
 	@Override
 	public void draw(java.awt.Graphics canvas) {
 		// TODO Auto-generated method stub
+		canvas.setColor(getColor());
 		canvas.drawLine(firstPoint.x, firstPoint.y, secondPoint.x, secondPoint.y);
 	}
 	
@@ -42,10 +41,17 @@ public class lineSegment extends myShape {
 		this.properties.put("y2", (double) secondPoint.y);
 	}
 	
+	public java.util.Map<String, Double> getProperties() {
+		if (properties.equals(null)) {
+			return null;
+		}
+		return properties;
+	}
+	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
-		lineSegment copy = new lineSegment(firstPoint, secondPoint, getCanavas());
+		lineSegment copy = new lineSegment(firstPoint, secondPoint);
 		copy.setColor(getColor());
 		copy.setFillColor(getFillColor());
 		return copy;

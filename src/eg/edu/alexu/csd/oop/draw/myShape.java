@@ -13,17 +13,20 @@ public class myShape implements Shape{
 	/**
 	 * frame color of the shape.
 	 */
-	private Color frameColor = new Color(0);
+	private Color frameColor = Color.BLACK;
 	/**
 	 * fill color of the shape.
 	 */
-	private Color fillColor = new Color(0);
+	private Color fillColor = Color.WHITE;
 	
 	public void setPosition(java.awt.Point position) {
 		this.position = position;
 	}
 	
     public java.awt.Point getPosition() {
+    	if (position.equals(null)) {
+			return null;
+		}
 		return position;
 	}
     
@@ -77,11 +80,4 @@ public class myShape implements Shape{
 		return null;
 	} // create a deep clone of the shape
     
-    public void setCanvas(Graphics canvas) {
-		this.canvas = canvas;
-	}
-    
-    public Graphics getCanavas () {
-    	return canvas;
-    }
 }

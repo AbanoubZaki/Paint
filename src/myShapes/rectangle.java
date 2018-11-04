@@ -22,18 +22,19 @@ public class rectangle extends myShape {
 	/**
 	 * the properties
 	 */
-	private Map<String, Double> Properties = new HashMap<>();
+	private Map<String, Double> properties = new HashMap<>();
 	
-	public rectangle(Point position, Double length, Double width, java.awt.Graphics canvas) {
+	public rectangle(Point position, Double length, Double width) {
 		this.length = length;
 		this.width = width;
-		setProperties(Properties);
+		setProperties(properties);
 		setPosition(position);
-		setCanvas(canvas);
-		draw(canvas);
 	}
 	
 	public void draw(java.awt.Graphics canvas) {
+		canvas.setColor(getFillColor());
+		canvas.fillRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(width));
+		canvas.setColor(getColor());
 		canvas.drawRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(width));
 	}
 	
@@ -43,19 +44,22 @@ public class rectangle extends myShape {
 	 */
 	// update shape specific properties (e.g., radius)
 	public void setProperties(java.util.Map<String, Double> properties) {
-		Properties.put("length", length);
-		Properties.put("width", width);
+		properties.put("length", length);
+		properties.put("width", width);
 	}
 	
 	public java.util.Map<String, Double> getProperties() {
-		return Properties;
+		if (properties.equals(null)) {
+			return null;
+		}
+		return properties;
 	}
 	
 	/**
 	 * makes a copy of the shape. implemented in each class extending shape
 	 */
 	public Object clone() throws CloneNotSupportedException {
-		Shape newRectangle = new rectangle(getPosition(), length, width, getCanavas());
+		Shape newRectangle = new rectangle(getPosition(), length, width);
 		newRectangle.setColor(getColor());
 		newRectangle.setFillColor(getFillColor());
 		return newRectangle;

@@ -15,35 +15,41 @@ public class circle extends myShape {
      */
     private Map<String, Double> properties = new HashMap<>();
     
-	public circle(Point position, Double radius, java.awt.Graphics canvas) {
+	public circle(Point position, Double radius) {
 		// TODO Auto-generated constructor stub
 		this.radius = radius;
 		setPosition(position);
 		setProperties(properties);
-		setCanvas(canvas);
-		draw(canvas);
 	}
 	
 	@Override
 	public void draw(java.awt.Graphics canvas) {
 		// TODO Auto-generated method stub
+		canvas.setColor(getFillColor());
+		canvas.fillOval(getPosition().x, getPosition().y, (int) Math.round(radius), (int) Math.round(radius));
+		canvas.setColor(getColor());
 		canvas.drawOval(getPosition().x, getPosition().y, (int) Math.round(radius), (int) Math.round(radius));
 	}
 	
 	@Override
 	public void setProperties(Map<String, Double> properties) {
 		// TODO Auto-generated method stub
-		this.properties.put("radius", radius);
+		properties.put("radius", radius);
+	}
+	
+	public java.util.Map<String, Double> getProperties() {
+		if (properties.equals(null)) {
+			return null;
+		}
+		return properties;
 	}
 	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
-		circle copy = new circle(getPosition(), radius, getCanavas());
+		circle copy = new circle(getPosition(), radius);
 		copy.setColor(getColor());
 		copy.setFillColor(getFillColor());
-		copy.setPosition(getPosition());
-		copy.setProperties(getProperties());
 		return copy;
 	}
 }

@@ -26,22 +26,24 @@ public class triangle extends myShape {
 	/**
 	 * properties hashMap.
 	 */
-	private Map<String, Double> Properties = new HashMap<>();
+	private Map<String, Double> properties = new HashMap<>();
 
-	public triangle(Point position, Double[] xPoints, Double[] yPoints, java.awt.Graphics canvas) {
+	public triangle(Double[] xPoints, Double[] yPoints) {
 		firstPoint.x = (int) Math.round(xPoints[0]);
-		firstPoint.x = (int) Math.round(xPoints[0]);
+		firstPoint.y = (int) Math.round(yPoints[0]);
 		secondPoint.x = (int) Math.round(xPoints[1]);
-		secondPoint.x = (int) Math.round(xPoints[1]);
+		secondPoint.y = (int) Math.round(yPoints[1]);
 		thirdPoint.x = (int) Math.round(xPoints[2]);
-		thirdPoint.x = (int) Math.round(xPoints[2]);
-		setProperties(Properties);
-		setPosition(position);
-		setCanvas(canvas);
-		draw(canvas);
+		thirdPoint.y = (int) Math.round(yPoints[2]);
+		setProperties(properties);
+		setPosition(firstPoint);
 	}
 
 	public void draw(java.awt.Graphics canvas) {
+		canvas.setColor(getFillColor());
+		canvas.fillPolygon(new int[] { firstPoint.x, secondPoint.x, thirdPoint.x },
+				new int[] { firstPoint.y, secondPoint.y, thirdPoint.y }, 3);
+		canvas.setColor(getColor());
 		canvas.drawPolygon(new int[] { firstPoint.x, secondPoint.x, thirdPoint.x },
 				new int[] { firstPoint.y, secondPoint.y, thirdPoint.y }, 3);
 	}
@@ -52,25 +54,28 @@ public class triangle extends myShape {
 	 */
 	// update shape specific properties (e.g., radius)
 	public void setProperties(java.util.Map<String, Double> properties) {
-		Properties.put("firstPointX", (double) firstPoint.x);
-		Properties.put("firstPointY", (double) firstPoint.y);
-		Properties.put("secondPointX", (double) secondPoint.x);
-		Properties.put("secondPointY", (double) secondPoint.y);
-		Properties.put("thirdPointX", (double) thirdPoint.x);
-		Properties.put("thirdPointY", (double) thirdPoint.y);
+		properties.put("x1", (double) firstPoint.x);
+		properties.put("y1", (double) firstPoint.y);
+		properties.put("x2", (double) secondPoint.x);
+		properties.put("y2", (double) secondPoint.y);
+		properties.put("x3", (double) thirdPoint.x);
+		properties.put("y3", (double) thirdPoint.y);
 	}
 	
 	public java.util.Map<String, Double> getProperties() {
-		return Properties;
+		if (properties.equals(null)) {
+			return null;
+		}
+		return properties;
 	}
 	
 	/**
 	 * makes a copy of the shape. implemented in each class extending shape
 	 */
 	public Object clone() throws CloneNotSupportedException {
-		Shape newTriangle = new triangle(getPosition(),
+		Shape newTriangle = new triangle(
 				new Double[] { (double) firstPoint.x, (double) secondPoint.x, (double) thirdPoint.x },
-				new Double[] { (double) firstPoint.y, (double) secondPoint.y, (double) thirdPoint.y }, getCanavas());
+				new Double[] { (double) firstPoint.y, (double) secondPoint.y, (double) thirdPoint.y });
 		newTriangle.setColor(getColor());
 		newTriangle.setFillColor(getFillColor());
 		return newTriangle;

@@ -22,17 +22,15 @@ public class myTest {
 		Shape line = new lineSegment(new Point(20,50), new Point(20,50));
 		Shape rect = new rectangle(new Point(20,50), 42.0, 60.0);
 		
-		//d.addShape(triangle);
-//		d.addShape(square);
-//		d.addShape(circle);
-//		d.addShape(ellipse);
-//		d.addShape(line);
-//		d.addShape(rect);
-		
 		Shape shape1 = new DummyShape();
         shape1.setColor(Color.RED);
-        d.addShape(shape1);
-		
-		d.save("C:\\Users\\Abanoub Ashraf\\Desktop\\test save\\first.XmL");
+        d.addShape(square);
+		d.addShape(shape1);
+		d.addShape(rect);
+		d.addShape(ellipse);
+		d.addShape(line);
+		d.addShape(triangle);
+		d.addShape(circle);
+		d.save("C:\\Users\\Abanoub Ashraf\\Desktop\\test save\\first.JsOn.txt");
 	}
 }

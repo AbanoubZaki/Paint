@@ -19,6 +19,11 @@ public class myShape implements Shape{
 	 */
 	private Color fillColor = Color.WHITE;
 	
+	/**
+	 * if true make the shape transparent else there is a fill color.
+	 */
+	boolean isTransparent = true;
+	
 	public void setPosition(java.awt.Point position) {
 		this.position = position;
 	}
@@ -55,11 +60,12 @@ public class myShape implements Shape{
 	}
 
     public void setFillColor(java.awt.Color color) {
+    	isTransparent = false;
     	this.fillColor = color;
 	}
     
     public java.awt.Color getFillColor() {
-    	if (fillColor.equals(null)) {
+    	if (fillColor.equals(null) || isTransparent == true) {
     		return null;
     	}
 		return fillColor;

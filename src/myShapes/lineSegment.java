@@ -17,12 +17,17 @@ public class lineSegment extends myShape {
      */
     private Map<String, Double> properties = new HashMap<>();
     
+    /**
+     * no argument constructor.
+     */
+    public lineSegment() {
+	}
+    
 	public lineSegment (Point firstPoint, Point secondPoint) {
 		// TODO Auto-generated constructor stub
 		this.firstPoint = firstPoint;
 		this.secondPoint = secondPoint;
 		setPosition(firstPoint);
-		setProperties(properties);
 	}
 	
 	@Override
@@ -35,6 +40,11 @@ public class lineSegment extends myShape {
 	@Override
 	public void setProperties(Map<String, Double> properties) {
 		// TODO Auto-generated method stub
+		firstPoint.x = (int) Math.round(properties.get("x1"));
+		firstPoint.y = (int) Math.round(properties.get("y1"));
+		secondPoint.x = (int) Math.round(properties.get("x2"));
+		secondPoint.y = (int) Math.round(properties.get("y2"));
+		
 		this.properties.put("x1", (double) firstPoint.x);
 		this.properties.put("y1", (double) firstPoint.y);
 		this.properties.put("x2", (double) secondPoint.x);

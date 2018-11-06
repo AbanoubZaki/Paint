@@ -13,15 +13,22 @@ public class square extends myShape {
 
 	private Map<String, Double> properties = new HashMap<>();
 	
+	/**
+     * no argument constructor.
+     */
+    public square() {
+	}
+	
 	public square(Point position, Double length) {
 		this.length = length;
-		setProperties(properties);
 		setPosition(position);
 	}
 
 	public void draw(java.awt.Graphics canvas) {
-		canvas.setColor(getFillColor());
-		canvas.fillRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(length));
+		if (getFillColor() != null) {
+			canvas.setColor(getFillColor());
+			canvas.fillRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(length));
+		}
 		canvas.setColor(getColor());
 		canvas.drawRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(length));
 	}
@@ -32,6 +39,8 @@ public class square extends myShape {
 	 */
 	// update shape specific properties (e.g., radius)
 	public void setProperties(java.util.Map<String, Double> properties) {
+		length = properties.get("length");
+		
 		properties.put("length", length);
 	}
 

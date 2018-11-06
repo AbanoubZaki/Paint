@@ -15,18 +15,25 @@ public class circle extends myShape {
      */
     private Map<String, Double> properties = new HashMap<>();
     
+    /**
+     * no argument constructor.
+     */
+    public circle() {
+	}
+    
 	public circle(Point position, Double radius) {
 		// TODO Auto-generated constructor stub
 		this.radius = radius;
 		setPosition(position);
-		setProperties(properties);
 	}
 	
 	@Override
 	public void draw(java.awt.Graphics canvas) {
 		// TODO Auto-generated method stub
-		canvas.setColor(getFillColor());
-		canvas.fillOval(getPosition().x, getPosition().y, (int) Math.round(radius), (int) Math.round(radius));
+		if (getFillColor() != null) {
+			canvas.setColor(getFillColor());
+			canvas.fillOval(getPosition().x, getPosition().y, (int) Math.round(radius), (int) Math.round(radius));
+		}
 		canvas.setColor(getColor());
 		canvas.drawOval(getPosition().x, getPosition().y, (int) Math.round(radius), (int) Math.round(radius));
 	}
@@ -34,7 +41,9 @@ public class circle extends myShape {
 	@Override
 	public void setProperties(Map<String, Double> properties) {
 		// TODO Auto-generated method stub
-		properties.put("radius", radius);
+		radius = properties.get("radius");
+		
+		this.properties.put("radius", radius);
 	}
 	
 	public java.util.Map<String, Double> getProperties() {

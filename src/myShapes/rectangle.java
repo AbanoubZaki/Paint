@@ -24,16 +24,23 @@ public class rectangle extends myShape {
 	 */
 	private Map<String, Double> properties = new HashMap<>();
 	
+	/**
+     * no argument constructor.
+     */
+    public rectangle() {
+	}
+	
 	public rectangle(Point position, Double length, Double width) {
 		this.length = length;
 		this.width = width;
-		setProperties(properties);
 		setPosition(position);
 	}
 	
 	public void draw(java.awt.Graphics canvas) {
-		canvas.setColor(getFillColor());
-		canvas.fillRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(width));
+		if (getFillColor() != null) {
+			canvas.setColor(getFillColor());
+			canvas.fillRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(width));
+		}
 		canvas.setColor(getColor());
 		canvas.drawRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(width));
 	}
@@ -44,6 +51,9 @@ public class rectangle extends myShape {
 	 */
 	// update shape specific properties (e.g., radius)
 	public void setProperties(java.util.Map<String, Double> properties) {
+		length = properties.get("length");
+		width = properties.get("width");
+		
 		properties.put("length", length);
 		properties.put("width", width);
 	}

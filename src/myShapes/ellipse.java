@@ -17,19 +17,26 @@ public class ellipse extends myShape {
      */
     private Map<String, Double> properties = new HashMap<>();
     
+    /**
+     * no argument constructor.
+     */
+    public ellipse() {
+	}
+    
 	public ellipse(Point position, Double horizontalRadius, Double verticalRadius) {
 		// TODO Auto-generated constructor stub
 		this.horizontalRadius = horizontalRadius;
 		this.verticalRadius = verticalRadius;
 		setPosition(position);
-		setProperties(properties);
 	}
 	
 	@Override
 	public void draw(java.awt.Graphics canvas) {
 		// TODO Auto-generated method stub
-		canvas.setColor(getFillColor());
-		canvas.fillOval(getPosition().x, getPosition().y, (int) Math.round(horizontalRadius), (int) Math.round(verticalRadius));
+		if (getFillColor() != null) {
+			canvas.setColor(getFillColor());
+			canvas.fillOval(getPosition().x, getPosition().y, (int) Math.round(horizontalRadius), (int) Math.round(verticalRadius));
+		}
 		canvas.setColor(getColor());
 		canvas.drawOval(getPosition().x, getPosition().y, (int) Math.round(horizontalRadius), (int) Math.round(verticalRadius));
 	}
@@ -37,6 +44,9 @@ public class ellipse extends myShape {
 	@Override
 	public void setProperties(Map<String, Double> properties) {
 		// TODO Auto-generated method stub
+		horizontalRadius = properties.get("horizontalRadius");
+		verticalRadius = properties.get("verticalRadius");
+		
 		this.properties.put("horizontalRadius", horizontalRadius);
 		this.properties.put("verticalRadius", verticalRadius);
 	}

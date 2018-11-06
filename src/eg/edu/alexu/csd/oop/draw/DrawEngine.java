@@ -20,7 +20,7 @@ public class DrawEngine implements DrawingEngine {
 	/**
 	 * current shapes.
 	 */
-	private ArrayList<Shape> shapes = new ArrayList<>();
+	public ArrayList<Shape> shapes = new ArrayList<>();
 
 	/**
 	 * 2 stacks for undo and redo.
@@ -215,7 +215,6 @@ public class DrawEngine implements DrawingEngine {
 				/**
 				 * write properties of the shape from the map of properties.
 				 */
-
 				if (shapes.get(i).getProperties() == null) {
 					pw.println("<key>-1</key>");
 				} else {
@@ -232,23 +231,82 @@ public class DrawEngine implements DrawingEngine {
 				if (shapes.get(i).getColor() == null) {
 					pw.println(colorStart + -1 + colorEnd);
 				} else {
-					pw.println(colorStart + shapes.get(i).getColor() + colorEnd);
+					pw.println(colorStart + shapes.get(i).getColor().getRGB() + colorEnd);
 				}
 				if (shapes.get(i).getFillColor() == null) {
 					pw.println(fillcolorStart + -1 + fillcolorEnd);
 				} else {
-					pw.println(fillcolorStart + shapes.get(i).getFillColor() + fillcolorEnd);
+					pw.println(fillcolorStart + shapes.get(i).getFillColor().getRGB() + fillcolorEnd);
 				}
 				pw.println(shapetEnd);
 			}
 			pw.println(paintEnd);
 			pw.close();
 			
-			
-			
-			
 		} else if (path.contains(".JsOn")) {
+			String startShapeArray = "{\"ShapeArray\" :";
+			String startShape = "{ \"className\" :  \"";
 			
+			File saveXmL = new File(path);
+			try {
+				saveXmL.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			FileWriter fw = null;
+			try {
+				fw = new FileWriter(path);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			PrintWriter pw = new PrintWriter(fw);
+			pw.println(startShapeArray);
+			pw.println("[");
+			for (int i = 0; i < shapes.size(); i++) {
+				pw.println(startShape + shapes.get(i).getClass().getCanonicalName() + "\",");
+				if (shapes.get(i).getPosition() == null) {
+					pw.println("\"x\" : \"" + -1 + "\",");
+					pw.println("\"y\" : \"" + -1 + "\",");
+				} else {
+					pw.println("\"x\" : \"" + shapes.get(i).getPosition().x + "\",");
+					pw.println("\"y\" : \"" + shapes.get(i).getPosition().y + "\",");
+				}
+				/**
+				 * write properties of the shape from the map of properties.
+				 */
+				if (shapes.get(i).getProperties() == null) {
+					pw.println("\"key\" : \"-1\",");
+				} else {
+					List<String> keys = new ArrayList<String>(shapes.get(i).getProperties().keySet());
+					String property = "\"";
+					for (int j = 0; j < shapes.get(i).getProperties().size(); j++) {
+						property += keys.get(j) + "\" : \"" + 
+						shapes.get(i).getProperties().get(keys.get(j)) + "\",";
+						pw.println(property);
+						property = "\"";
+					}	
+				}
+				
+				if (shapes.get(i).getColor() == null) {
+					pw.println("\"color\" : \" -1\",");
+				} else {
+					pw.println("\"color\" : \" " + shapes.get(i).getColor().getRGB() + "\",");
+				}
+				if (shapes.get(i).getFillColor() == null) {
+					pw.println("\"fillcolor\" : \" -1\"");
+				} else {
+					pw.println("\"fillcolor\" : \" " + shapes.get(i).getFillColor().getRGB() + "\",");
+				}
+				if (i == shapes.size()-1) {
+					pw.println("}");
+				} else {
+					pw.println("},");
+				}
+			}
+			pw.println("]");
+			pw.println("}");
+			pw.close();
 		}
 	}
 

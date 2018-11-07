@@ -19,12 +19,7 @@ public class circle extends myShape {
      * no argument constructor.
      */
     public circle() {
-	}
-    
-	public circle(Point position, Double radius) {
-		// TODO Auto-generated constructor stub
-		this.radius = radius;
-		setPosition(position);
+    	this.properties.put("radius", null);
 	}
 	
 	@Override
@@ -43,7 +38,7 @@ public class circle extends myShape {
 		// TODO Auto-generated method stub
 		radius = properties.get("radius");
 		
-		this.properties.put("radius", radius);
+		this.properties = properties;
 	}
 	
 	public java.util.Map<String, Double> getProperties() {
@@ -56,9 +51,13 @@ public class circle extends myShape {
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
-		circle copy = new circle(getPosition(), radius);
+		circle copy = new circle();
+		copy.setPosition(new Point(getPosition().x, getPosition().y));
 		copy.setColor(getColor());
 		copy.setFillColor(getFillColor());
+		Map <String, Double> propertiesCopy = new HashMap<String, Double>();
+		propertiesCopy.putAll(getProperties());
+		copy.setProperties(propertiesCopy);
 		return copy;
 	}
 }

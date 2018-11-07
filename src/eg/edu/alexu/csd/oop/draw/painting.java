@@ -249,7 +249,8 @@ public class painting extends JFrame{
 		JButton load = new JButton("Load");
 		load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				engine.load("C:\\Users\\Abanoub Ashraf\\Desktop\\test save\\saved.XmL.txt");
+				
+				engine.load("C:\\Users\\Abanoub Ashraf\\Desktop\\paint project\\test save\\saved.XmL.txt");
 				engine.refresh(canvas.getGraphics());
 			}
 		});
@@ -296,10 +297,16 @@ public class painting extends JFrame{
 				}
 			}
 		});
+		
+		JButton clone = new JButton("Clone");
+		menuBar.add(clone);
+		clone.setForeground(Color.WHITE);
+		clone.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		clone.setBackground(new Color(70, 130, 180));
 		menuBar.add(comboBox);
 		comboBox.setFont(new Font("Times New Roman", Font.ITALIC, 12));
 		comboBox.setMaximumRowCount(20);
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Select Shape", "Circle", "Ellipse", "LineSegment", "Square", "Rectangle", "Triangle"}));
+		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Select Shape", "Circle", "Ellipse", "LineSegment", "Square", "Rectangle", "Triangle"}));
 		comboBox.setToolTipText("Draw");
 		
 		frameColorPanel = new JPanel();
@@ -348,9 +355,9 @@ public class painting extends JFrame{
 		refresh.setFont(new Font("Times New Roman", Font.ITALIC, 12));
 		
 		JButton button = new JButton("Import Shapes");
+		menuBar.add(button);
 		button.setBackground(new Color(70, 130, 180));
 		button.setForeground(new Color(255, 255, 255));
-		menuBar.add(button);
 		button.setFont(new Font("Times New Roman", Font.ITALIC, 12));
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

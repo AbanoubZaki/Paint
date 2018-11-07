@@ -32,16 +32,12 @@ public class triangle extends myShape {
      * no argument constructor.
      */
     public triangle() {
-	}
-	
-	public triangle(Double[] xPoints, Double[] yPoints) {
-		firstPoint.x = (int) Math.round(xPoints[0]);
-		firstPoint.y = (int) Math.round(yPoints[0]);
-		secondPoint.x = (int) Math.round(xPoints[1]);
-		secondPoint.y = (int) Math.round(yPoints[1]);
-		thirdPoint.x = (int) Math.round(xPoints[2]);
-		thirdPoint.y = (int) Math.round(yPoints[2]);
-		setPosition(firstPoint);
+    	properties.put("x1", null);
+		properties.put("y1", null);
+		properties.put("x2", null);
+		properties.put("y2", null);
+		properties.put("x3", null);
+		properties.put("y3", null);
 	}
 
 	public void draw(java.awt.Graphics canvas) {
@@ -68,12 +64,7 @@ public class triangle extends myShape {
 		thirdPoint.x = (int) Math.round(properties.get("x3"));
 		thirdPoint.y = (int) Math.round(properties.get("y3"));
 		
-		properties.put("x1", (double) firstPoint.x);
-		properties.put("y1", (double) firstPoint.y);
-		properties.put("x2", (double) secondPoint.x);
-		properties.put("y2", (double) secondPoint.y);
-		properties.put("x3", (double) thirdPoint.x);
-		properties.put("y3", (double) thirdPoint.y);
+		this.properties = properties;
 	}
 	
 	public java.util.Map<String, Double> getProperties() {
@@ -87,11 +78,13 @@ public class triangle extends myShape {
 	 * makes a copy of the shape. implemented in each class extending shape
 	 */
 	public Object clone() throws CloneNotSupportedException {
-		Shape newTriangle = new triangle(
-				new Double[] { (double) firstPoint.x, (double) secondPoint.x, (double) thirdPoint.x },
-				new Double[] { (double) firstPoint.y, (double) secondPoint.y, (double) thirdPoint.y });
-		newTriangle.setColor(getColor());
-		newTriangle.setFillColor(getFillColor());
-		return newTriangle;
+		triangle copy = new triangle();
+		copy.setPosition(new Point(getPosition().x, getPosition().y));
+		copy.setColor(getColor());
+		copy.setFillColor(getFillColor());
+		Map <String, Double> propertiesCopy = new HashMap<String, Double>();
+		propertiesCopy.putAll(getProperties());
+		copy.setProperties(propertiesCopy);
+		return copy;
 	} // create a deep clone of the shape
 }

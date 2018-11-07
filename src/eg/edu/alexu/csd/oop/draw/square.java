@@ -17,11 +17,7 @@ public class square extends myShape {
      * no argument constructor.
      */
     public square() {
-	}
-	
-	public square(Point position, Double length) {
-		this.length = length;
-		setPosition(position);
+    	properties.put("length", null);
 	}
 
 	public void draw(java.awt.Graphics canvas) {
@@ -41,7 +37,7 @@ public class square extends myShape {
 	public void setProperties(java.util.Map<String, Double> properties) {
 		length = properties.get("length");
 		
-		properties.put("length", length);
+		this.properties = properties;
 	}
 
 	public java.util.Map<String, Double> getProperties() {
@@ -55,10 +51,14 @@ public class square extends myShape {
 	 * makes a copy of the shape. implemented in each class extending shape
 	 */
 	public Object clone() throws CloneNotSupportedException {
-		Shape newSquare = new square(getPosition(), length);
-		newSquare.setColor(getColor());
-		newSquare.setFillColor(getFillColor());
-		return newSquare;
+		square copy = new square();
+		copy.setPosition(new Point(getPosition().x, getPosition().y));
+		copy.setColor(getColor());
+		copy.setFillColor(getFillColor());
+		Map <String, Double> propertiesCopy = new HashMap<String, Double>();
+		propertiesCopy.putAll(getProperties());
+		copy.setProperties(propertiesCopy);
+		return copy;
 	} // create a deep clone of the shape
 
 }

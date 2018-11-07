@@ -21,13 +21,10 @@ public class lineSegment extends myShape {
      * no argument constructor.
      */
     public lineSegment() {
-	}
-    
-	public lineSegment (Point firstPoint, Point secondPoint) {
-		// TODO Auto-generated constructor stub
-		this.firstPoint = firstPoint;
-		this.secondPoint = secondPoint;
-		setPosition(firstPoint);
+    	this.properties.put("x1", null);
+		this.properties.put("y1", null);
+		this.properties.put("x2", null);
+		this.properties.put("y2", null);
 	}
 	
 	@Override
@@ -45,10 +42,7 @@ public class lineSegment extends myShape {
 		secondPoint.x = (int) Math.round(properties.get("x2"));
 		secondPoint.y = (int) Math.round(properties.get("y2"));
 		
-		this.properties.put("x1", (double) firstPoint.x);
-		this.properties.put("y1", (double) firstPoint.y);
-		this.properties.put("x2", (double) secondPoint.x);
-		this.properties.put("y2", (double) secondPoint.y);
+		this.properties = properties;
 	}
 	
 	public java.util.Map<String, Double> getProperties() {
@@ -61,9 +55,13 @@ public class lineSegment extends myShape {
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
-		lineSegment copy = new lineSegment(firstPoint, secondPoint);
+		lineSegment copy = new lineSegment();
+		copy.setPosition(new Point(getPosition().x, getPosition().y));
 		copy.setColor(getColor());
 		copy.setFillColor(getFillColor());
+		Map <String, Double> propertiesCopy = new HashMap<String, Double>();
+		propertiesCopy.putAll(getProperties());
+		copy.setProperties(propertiesCopy);
 		return copy;
 	}
 }

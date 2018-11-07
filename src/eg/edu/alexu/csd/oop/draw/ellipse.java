@@ -21,13 +21,8 @@ public class ellipse extends myShape {
      * no argument constructor.
      */
     public ellipse() {
-	}
-    
-	public ellipse(Point position, Double horizontalRadius, Double verticalRadius) {
-		// TODO Auto-generated constructor stub
-		this.horizontalRadius = horizontalRadius;
-		this.verticalRadius = verticalRadius;
-		setPosition(position);
+    	this.properties.put("horizontalRadius", null);
+		this.properties.put("verticalRadius", null);
 	}
 	
 	@Override
@@ -47,8 +42,7 @@ public class ellipse extends myShape {
 		horizontalRadius = properties.get("horizontalRadius");
 		verticalRadius = properties.get("verticalRadius");
 		
-		this.properties.put("horizontalRadius", horizontalRadius);
-		this.properties.put("verticalRadius", verticalRadius);
+		this.properties = properties;
 	}
 	
 	public java.util.Map<String, Double> getProperties() {
@@ -61,9 +55,13 @@ public class ellipse extends myShape {
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
-		ellipse copy = new ellipse(getPosition(), horizontalRadius, verticalRadius);
+		ellipse copy = new ellipse();
+		copy.setPosition(new Point(getPosition().x, getPosition().y));
 		copy.setColor(getColor());
 		copy.setFillColor(getFillColor());
+		Map <String, Double> propertiesCopy = new HashMap<String, Double>();
+		propertiesCopy.putAll(getProperties());
+		copy.setProperties(propertiesCopy);
 		return copy;
 	}
 }

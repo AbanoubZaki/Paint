@@ -1,4 +1,4 @@
-package myShapes;
+package eg.edu.alexu.csd.oop.draw;
 
 import java.awt.Point;
 import java.util.HashMap;
@@ -7,32 +7,44 @@ import java.util.Map;
 import eg.edu.alexu.csd.oop.draw.Shape;
 import eg.edu.alexu.csd.oop.draw.myShape;
 
-public class square extends myShape {
+public class rectangle extends myShape {
 
-	private Double length = new Double(0);
-
+	/**
+	 * length of the rectangle.
+	 */
+	Double length = new Double(0);
+	
+	/**
+	 * width of the rectangle
+	 */
+	Double width = new Double(0);
+	
+	/**
+	 * the properties
+	 */
 	private Map<String, Double> properties = new HashMap<>();
 	
 	/**
      * no argument constructor.
      */
-    public square() {
+    public rectangle() {
 	}
 	
-	public square(Point position, Double length) {
+	public rectangle(Point position, Double length, Double width) {
 		this.length = length;
+		this.width = width;
 		setPosition(position);
 	}
-
+	
 	public void draw(java.awt.Graphics canvas) {
 		if (getFillColor() != null) {
 			canvas.setColor(getFillColor());
-			canvas.fillRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(length));
+			canvas.fillRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(width));
 		}
 		canvas.setColor(getColor());
-		canvas.drawRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(length));
+		canvas.drawRect(getPosition().x, getPosition().y, (int) Math.round(length), (int) Math.round(width));
 	}
-
+	
 	/**
 	 * contains each main property of the shape. implemented in each class extending
 	 * shape
@@ -40,25 +52,26 @@ public class square extends myShape {
 	// update shape specific properties (e.g., radius)
 	public void setProperties(java.util.Map<String, Double> properties) {
 		length = properties.get("length");
+		width = properties.get("width");
 		
 		properties.put("length", length);
+		properties.put("width", width);
 	}
-
+	
 	public java.util.Map<String, Double> getProperties() {
 		if (properties.equals(null)) {
 			return null;
 		}
 		return properties;
 	}
-
+	
 	/**
 	 * makes a copy of the shape. implemented in each class extending shape
 	 */
 	public Object clone() throws CloneNotSupportedException {
-		Shape newSquare = new square(getPosition(), length);
-		newSquare.setColor(getColor());
-		newSquare.setFillColor(getFillColor());
-		return newSquare;
+		Shape newRectangle = new rectangle(getPosition(), length, width);
+		newRectangle.setColor(getColor());
+		newRectangle.setFillColor(getFillColor());
+		return newRectangle;
 	} // create a deep clone of the shape
-
 }

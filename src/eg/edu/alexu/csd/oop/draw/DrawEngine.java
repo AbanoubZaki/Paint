@@ -1,14 +1,22 @@
 package eg.edu.alexu.csd.oop.draw;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class DrawEngine implements DrawingEngine {
 	
@@ -326,7 +334,139 @@ public class DrawEngine implements DrawingEngine {
 	}
 
 	private void loadFromXmlFile(String path) {
+		
+		myShape shape = null;
+		String pointX = ".\\w.(-?\\d+)..\\w.";
+		String shapeStartPattern = ".shape id=\"(\\D+)..";
+		String mapItemsPattern = ".(\\w+).(\\d+\\.\\d+)..(\\w+).";
+		String colorPattern = "<\\w+>(\\S+)</\\w+>";
+		String stringFromRegex;
+		double value;
+		Color color;
+		/**
+		 * patterns contains: 0 -> class name 1 -> point x & y
+		 */
+		ArrayList<String> patterns = new ArrayList<String>();
+		patterns.add(shapeStartPattern);
+		patterns.add(pointX);
+		patterns.add(mapItemsPattern);
+		Pattern p;
 
+		try {
+			FileReader fr = new FileReader(path);
+			BufferedReader br = new BufferedReader(fr);
+			String fromFile;
+			fromFile = br.readLine();
+
+			while (true) {
+				/**
+				 * read class name.
+				 */
+				fromFile = br.readLine();
+				p = Pattern.compile(patterns.get(0));
+				Matcher xml = p.matcher(fromFile);
+				if (xml.find()) {
+					stringFromRegex = xml.group(1);
+					System.out.println(stringFromRegex);
+					Class<?> clazz;
+					try {
+						clazz = Class.forName(stringFromRegex);
+						shape = (myShape) clazz.newInstance();
+						Map<String, Double> theMap = shape.getProperties();
+
+						Point thePoint = new Point();
+
+						/**
+						 * read point x.
+						 */
+						fromFile = br.readLine();
+						p = Pattern.compile(pointX);
+						xml = p.matcher(fromFile);
+						if (xml.find()) {
+							stringFromRegex = xml.group(1);
+							System.out.println(stringFromRegex);
+							thePoint.x = Integer.parseInt(stringFromRegex);
+						}
+
+						/**
+						 * read point y.
+						 */
+						fromFile = br.readLine();
+						p = Pattern.compile(pointX);
+						xml = p.matcher(fromFile);
+						if (xml.find()) {
+							stringFromRegex = xml.group(1);
+							System.out.println(stringFromRegex);
+							thePoint.y = Integer.parseInt(stringFromRegex);
+						}
+						shape.setPosition(thePoint);
+
+						/**
+						 * read the map.
+						 */
+						fromFile = br.readLine();
+
+						fromFile = br.readLine();
+						p = Pattern.compile(mapItemsPattern);
+						xml = p.matcher(fromFile);
+						while (true) {
+							if (xml.find()) {
+								stringFromRegex = xml.group(1);
+								System.out.println(stringFromRegex);
+								value = Double.parseDouble(xml.group(2));
+								System.out.println(value);
+								theMap.put(stringFromRegex, value);
+							} else {
+								break;
+							}
+							fromFile = br.readLine();
+							xml = p.matcher(fromFile);
+						}
+
+						/**
+						 * read color.
+						 */
+						fromFile = br.readLine();
+						p = Pattern.compile(colorPattern);
+						xml = p.matcher(fromFile);
+						if (xml.find()) {
+							color = new Color(Integer.parseInt(xml.group(1)));
+							shape.setColor(color);
+							System.out.println(color);
+						}
+
+						/**
+						 * read fill color.
+						 */
+						fromFile = br.readLine();
+						p = Pattern.compile(colorPattern);
+						xml = p.matcher(fromFile);
+						if (xml.find()) {
+							color = new Color(Integer.parseInt(xml.group(1)));
+							shape.setFillColor(color);
+							System.out.println(color);
+						}
+
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InstantiationException | IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+					}
+					shapes.add(shape);
+					fromFile = br.readLine();
+				} else {
+					break;
+				}
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void loadFromJsonFile(String path) {

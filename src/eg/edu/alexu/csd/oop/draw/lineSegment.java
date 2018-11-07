@@ -1,4 +1,4 @@
-package myShapes;
+package eg.edu.alexu.csd.oop.draw;
 
 import java.awt.Point;
 import java.util.HashMap;

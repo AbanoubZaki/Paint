@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,15 +19,11 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
-
-import myShapes.circle;
-import myShapes.ellipse;
-import myShapes.lineSegment;
-import java.awt.Font;
 import javax.swing.border.MatteBorder;
-import java.awt.Window.Type;
 
 @SuppressWarnings("serial")
 public class painting extends JFrame{
@@ -41,6 +38,7 @@ public class painting extends JFrame{
 	ArrayList<Shape> shapes = new ArrayList<>();
 	JPanel frameColorPanel, fillColorPanel;
 	Color frameColor,fillColor;
+	boolean isColorFill = false;
 	
 	/**
 	 * Launch the application.
@@ -78,174 +76,45 @@ public class painting extends JFrame{
 		frmPaint.setType(Type.POPUP);
 		frmPaint.setTitle("Paint");
 		frmPaint.setResizable(false);
-		frmPaint.setBounds(100, 100, 607, 466);
+		frmPaint.setBounds(100, 100, 870, 494);
 		frmPaint.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
+		panel.setBackground(new Color(230, 230, 250));
 		frmPaint.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 		
-		comboBox = new JComboBox<String>();
-		comboBox.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		comboBox.setMaximumRowCount(20);
-		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Circle", "Ellipse", "LineSegment", "Square", "Rectangle", "Triangle"}));
-		comboBox.setToolTipText("Draw");
-		comboBox.setBounds(338, 11, 126, 28);
-		panel.add(comboBox);
-		
-		JButton redo = new JButton("Redo");
-		redo.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		redo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				canvas.getGraphics().clearRect(0, 0, 454, 306);
-				engine.redo();
-				engine.refresh(canvas.getGraphics());
-			}
-		});
-		redo.setBounds(89, 11, 69, 28);
-		panel.add(redo);
-		
-		JButton undo = new JButton("Undo");
-		undo.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		undo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				canvas.getGraphics().clearRect(0, 0, 454, 306);
-				engine.undo();
-				engine.refresh(canvas.getGraphics());
-			}
-		});
-		undo.setBounds(10, 11, 69, 28);
-		panel.add(undo);
-		
-		JButton refresh = new JButton("Refresh");
-		refresh.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		refresh.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				canvas.getGraphics().clearRect(0, 0, 454, 306);
-				engine.refresh(canvas.getGraphics());
-			}
-		});
-		refresh.setBounds(474, 11, 118, 28);
-		panel.add(refresh);
-		
-		JButton delete = new JButton("Delete");
-		delete.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		delete.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				
-			}
-		});
-		delete.setBounds(247, 11, 81, 28);
-		panel.add(delete);
-		
-		JButton button = new JButton("Import Shapes");
-		button.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				engine.getSupportedShapes();
-			}
-		});
-		button.setBounds(474, 53, 118, 28);
-		panel.add(button);
-		
-		JButton save = new JButton("Save");
-		save.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		save.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		save.setBounds(168, 11, 69, 28);
-		panel.add(save);
-		
-		JButton load = new JButton("Load");
-		load.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		load.setBounds(474, 331, 118, 28);
-		panel.add(load);
-		
-		JButton circle = new JButton("Circle");
-		circle.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		circle.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selectedShape = "circle";
-			}
-		});
-		circle.setBounds(474, 131, 118, 23);
-		panel.add(circle);
-		
-		JButton ellipse = new JButton("Ellipse");
-		ellipse.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		ellipse.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selectedShape = "ellipse";
-			}
-		});
-		ellipse.setBounds(474, 165, 118, 23);
-		panel.add(ellipse);
-		
-		JButton linesegment = new JButton("Line Segment");
-		linesegment.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		linesegment.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selectedShape = "lineSegment";
-			}
-		});
-		linesegment.setBounds(474, 199, 118, 23);
-		panel.add(linesegment);
-		
-		JButton square = new JButton("Square");
-		square.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		square.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selectedShape = "square";
-			}
-		});
-		square.setBounds(474, 233, 118, 23);
-		panel.add(square);
-		
-		JButton rectangle = new JButton("Rectangle");
-		rectangle.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		rectangle.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selectedShape = "rectangle";
-			}
-		});
-		rectangle.setBounds(474, 267, 118, 23);
-		panel.add(rectangle);
-		
-		JButton triangle = new JButton("Triangle");
-		triangle.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		triangle.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				selectedShape = "triangle";
-			}
-		});
-		triangle.setBounds(474, 297, 118, 23);
-		panel.add(triangle);
-		
 		canvas = new Canvas();
-		
 		canvas.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				if (!selectedShape.equals("")) {
-					if(e.getPoint().x > 454 || e.getPoint().x < 0 || e.getPoint().y > 306 || e.getPoint().y < 0) {
-						
-					} else {
-						position2 = e.getPoint();
-					}
+					position2 = e.getPoint();
 					int minX = Math.min(position1.x, position2.x);
 					int maxX = Math.max(position1.x, position2.x);
 					int minY = Math.min(position1.y, position2.y);
 					int maxY = Math.max(position1.y, position2.y);
 					
-					canvas.getGraphics().clearRect(0, 0, 454, 306);
+					canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 					engine.refresh(canvas.getGraphics());
 					switch (selectedShape) {
 					case "circle":
 						properties.put("radius", position1.distance(position2));
 						break;
 					case "ellipse":
+						if (position2.x > position1.x && position2.y < position1.y) {
+							//1st quad
+							shape.setPosition(new Point(position1.x, position2.y));
+							
+						} else if (position2.x < position1.x && position2.y > position1.y) {
+							//3rd quad
+							shape.setPosition(new Point(position2.x, position1.y));
+
+						} else if (position2.x < position1.x && position2.y < position1.y) {
+							//2nd quad
+							shape.setPosition(new Point(position2.x, position2.y));
+						}
+						
 						properties.put("horizontalRadius", (double) (maxX-minX));
 						properties.put("verticalRadius", (double) (maxY-minY));		
 						break;
@@ -253,7 +122,7 @@ public class painting extends JFrame{
 						properties.put("x1", (double) position1.x);
 						properties.put("y1", (double) position1.y);
 						properties.put("x2", (double) position2.x);
-						properties.put("y2", (double) position2.y);	
+						properties.put("y2", (double) position2.y);
 						break;
 					case "square":
 						if ((maxX-minX) > (maxY-minY)) {
@@ -317,13 +186,13 @@ public class painting extends JFrame{
 						shapes.add(new lineSegment());
 						break;
 					case "square":
-						shapes.add(new myShapes.square());
+						shapes.add(new square());
 						break;
 					case "rectangle":
-						shapes.add(new myShapes.rectangle());
+						shapes.add(new rectangle());
 						break;
 					case "triangle":
-						shapes.add(new myShapes.triangle());
+						shapes.add(new triangle());
 						break;
 					default:
 						break;
@@ -331,35 +200,120 @@ public class painting extends JFrame{
 					shape = shapes.get(shapes.size()-1);
 					shape.setPosition(position1);
 					shape.setColor(frameColor);
-					shape.setFillColor(fillColor);
+					if (isColorFill) {
+						shape.setFillColor(fillColor);
+					}
 				}
 			}
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				if (!selectedShape.equals("")) {					
-					engine.addShape(shape);
+				if (!selectedShape.equals("")) {
+					/**
+					 * check if the user only clicked the screen without dragging.
+					 */
+					if (!(position1.x == e.getPoint().x && position1.y == e.getPoint().y)) {
+						engine.addShape(shape);
+					}
 				}
 			}
 		});
-		canvas.setBounds(10, 53, 454, 306);
+		canvas.setBounds(10, 38, 844, 417);
 		canvas.setBackground(Color.WHITE);
 		panel.add(canvas);
 		
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setToolTipText("Tool Bar");
+		menuBar.setBackground(new Color(95, 158, 160));
+		menuBar.setBounds(10, 11, 844, 21);
+		panel.add(menuBar);
+		
+		JButton undo = new JButton("Undo");
+		undo.setBackground(new Color(70, 130, 180));
+		undo.setForeground(new Color(255, 255, 255));
+		menuBar.add(undo);
+		undo.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		
+		JButton redo = new JButton("Redo");
+		redo.setBackground(new Color(70, 130, 180));
+		redo.setForeground(new Color(255, 255, 255));
+		menuBar.add(redo);
+		redo.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		
+		JButton save = new JButton("Save");
+		save.setBackground(new Color(70, 130, 180));
+		save.setForeground(new Color(255, 255, 255));
+		menuBar.add(save);
+		save.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		
+		JButton load = new JButton("Load");
+		load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				engine.load("C:\\Users\\Abanoub Ashraf\\Desktop\\test save\\saved.XmL.txt");
+				engine.refresh(canvas.getGraphics());
+			}
+		});
+		load.setBackground(new Color(70, 130, 180));
+		load.setForeground(new Color(255, 255, 255));
+		menuBar.add(load);
+		load.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		
+		JButton delete = new JButton("Delete");
+		delete.setBackground(new Color(70, 130, 180));
+		delete.setForeground(new Color(255, 255, 255));
+		menuBar.add(delete);
+		delete.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		
+		comboBox = new JComboBox<String>();
+		comboBox.setForeground(new Color(255, 255, 255));
+		comboBox.setBackground(new Color(70, 130, 180));
+		comboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				switch (comboBox.getSelectedIndex()) {
+				case 0:
+					
+					break;
+				case 1:
+					selectedShape = "circle";
+					break;
+				case 2:
+					selectedShape = "ellipse";
+					break;
+				case 3:
+					selectedShape = "lineSegment";
+					break;
+				case 4:
+					selectedShape = "square";
+					break;
+				case 5:
+					selectedShape = "rectangle";
+					break;
+				case 6:
+					selectedShape = "triangle";
+					break;
+				default:
+					break;
+				}
+			}
+		});
+		menuBar.add(comboBox);
+		comboBox.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		comboBox.setMaximumRowCount(20);
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Select Shape", "Circle", "Ellipse", "LineSegment", "Square", "Rectangle", "Triangle"}));
+		comboBox.setToolTipText("Draw");
+		
 		frameColorPanel = new JPanel();
+		menuBar.add(frameColorPanel);
 		frameColorPanel.setForeground(new Color(0, 0, 0));
 		frameColorPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		frameColorPanel.setBackground(new Color(0, 0, 0));
-		frameColorPanel.setBounds(23, 365, 28, 28);
-		panel.add(frameColorPanel);
 		
-		fillColorPanel = new JPanel();
-		fillColorPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		fillColorPanel.setBackground(new Color(255, 255, 255));
-		fillColorPanel.setBounds(23, 404, 28, 28);
-		panel.add(fillColorPanel);
+		frameColor = frameColorPanel.getBackground();
 		
 		JButton btnFrameColor = new JButton("Frame Color");
+		btnFrameColor.setBackground(new Color(70, 130, 180));
+		btnFrameColor.setForeground(new Color(255, 255, 255));
+		menuBar.add(btnFrameColor);
 		btnFrameColor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JColorChooser chooser = new JColorChooser();
@@ -367,22 +321,87 @@ public class painting extends JFrame{
 				frameColorPanel.setBackground(frameColor);
 			}
 		});
-		btnFrameColor.setBounds(61, 365, 114, 28);
-		panel.add(btnFrameColor);
+		
+		fillColorPanel = new JPanel();
+		menuBar.add(fillColorPanel);
+		fillColorPanel.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		fillColorPanel.setBackground(new Color(255, 255, 255));
+		fillColor = fillColorPanel.getBackground();
 		
 		JButton btnFillColor = new JButton("Fill Color");
+		btnFillColor.setBackground(new Color(70, 130, 180));
+		btnFillColor.setForeground(new Color(255, 255, 255));
+		menuBar.add(btnFillColor);
 		btnFillColor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JColorChooser chooser = new JColorChooser();
+				isColorFill = true;
 				fillColor = JColorChooser.showDialog(null, "Select a color please." , Color.WHITE);
 				fillColorPanel.setBackground(fillColor);
 			}
 		});
-		btnFillColor.setBounds(61, 404, 114, 28);
-		panel.add(btnFillColor);
 		
-		frameColor = frameColorPanel.getBackground();
-		fillColor = fillColorPanel.getBackground();
+		JButton refresh = new JButton("Refresh");
+		refresh.setBackground(new Color(70, 130, 180));
+		refresh.setForeground(new Color(255, 255, 255));
+		menuBar.add(refresh);
+		refresh.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		
+		JButton button = new JButton("Import Shapes");
+		button.setBackground(new Color(70, 130, 180));
+		button.setForeground(new Color(255, 255, 255));
+		menuBar.add(button);
+		button.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		button.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				engine.getSupportedShapes();
+			}
+		});
+		refresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				engine.refresh(canvas.getGraphics());
+			}
+		});
+		delete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
+		});
+		save.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser chooser = new JFileChooser();
+			    chooser.setCurrentDirectory(new java.io.File("."));
+			    chooser.setDialogTitle("Choose the destination you want to save in.");
+			    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			    chooser.setAcceptAllFileFilterUsed(false);
+//			    FileNameExtensionFilter f = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
+//			    chooser.setFileFilter(f);
+			    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			      System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
+			      engine.save(chooser.getSelectedFile() + "\\saved.XmL.txt");
+			      engine.save(chooser.getSelectedFile() + "\\saved.JsOn.txt");
+			      System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
+			    } else {
+			      System.out.println("No Selection ");
+			    }
+			    
+			}
+		});
+		redo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				engine.redo();
+				engine.refresh(canvas.getGraphics());
+			}
+		});
+		undo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+				engine.undo();
+				engine.refresh(canvas.getGraphics());
+			}
+		});
 	 
 	}
 }

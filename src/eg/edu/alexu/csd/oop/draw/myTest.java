@@ -4,11 +4,6 @@ import java.awt.Color;
 import java.awt.Point;
 
 import eg.edu.alexu.csd.oop.test.DummyShape;
-import myShapes.circle;
-import myShapes.lineSegment;
-import myShapes.rectangle;
-import myShapes.square;
-import myShapes.triangle;
 
 public class myTest {
 
@@ -18,7 +13,7 @@ public class myTest {
 				new Double[] {10.0 , 250.0, 20.0}, new Double[] {10.0 , 50.0, 100.0});
 		Shape square = new square(new Point(75, 250), 40.0);
 		Shape circle = new circle(new Point(20,50), 20.0);
-		Shape ellipse = new myShapes.ellipse(new Point(20,50), 60.0, 30.0);
+		Shape ellipse = new ellipse(new Point(20,50), 60.0, 30.0);
 		Shape line = new lineSegment(new Point(20,50), new Point(20,50));
 		Shape rect = new rectangle(new Point(20,50), 42.0, 60.0);
 		
@@ -31,6 +26,6 @@ public class myTest {
 		d.addShape(line);
 		d.addShape(triangle);
 		d.addShape(circle);
-		d.save("C:\\Users\\Abanoub Ashraf\\Desktop\\test save\\first.JsOn.txt");
+		d.load("C:\\Users\\Abanoub Ashraf\\Desktop\\test save\\saved.XmL.txt");
 	}
 }

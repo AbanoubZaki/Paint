@@ -149,23 +149,6 @@ public class DrawEngine implements DrawingEngine {
 		}
 
 		return inheritedclasses;
-//		externalJar ex = new externalJar();
-//		List<Class<? extends Shape>> supportedShapes = new ArrayList<>();
-//		try {
-//			supportedShapes = ex.supportedShape();
-//		} catch (ClassNotFoundException | IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		supportedShapes.add(circle.class);
-//		supportedShapes.add(ellipse.class);
-//		supportedShapes.add(rectangle.class);
-//		supportedShapes.add(square.class);
-//		supportedShapes.add(lineSegment.class);
-//		supportedShapes.add(triangle.class);
-//		// System.out.println(Triangle.class.getName());
-//
-//		return supportedShapes;
 	}
 
 	/**

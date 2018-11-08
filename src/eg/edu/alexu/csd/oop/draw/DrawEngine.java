@@ -10,16 +10,19 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DrawEngine implements DrawingEngine {
-	
+
 	/**
 	 * boolean for undoRedo methods
 	 */
@@ -114,23 +117,55 @@ public class DrawEngine implements DrawingEngine {
 
 	@Override
 	public List<Class<? extends Shape>> getSupportedShapes() {
-		externalJar ex = new externalJar();
-		List<Class<? extends Shape>> supportedShapes = new ArrayList<>();
+		List<Class<? extends Shape>> inheritedclasses = new LinkedList<>();
+		String folder = "eg/edu/alexu/csd/oop/draw";
+		ClassLoader loader = ClassLoader.getSystemClassLoader();// this.getClass().getClassLoader();//Thread.currentThread().getContextClassLoader();
+		URL url = loader.getResource(folder);
+		String path = url.getPath();
+		File[] files = new File(path).listFiles();
+		for (File f : files) {
+			String string = folder + "/" + f.getName().substring(0, f.getName().length() - 6);
+			Class<?> check = null;
+			boolean isshape = false;
+			try {
+				check = Class.forName(string.replace('/', '.'));
+				isshape = myShape.class.isAssignableFrom(check);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+
+			if (isshape && !f.getName().contains("MyShape")) {
+				inheritedclasses.add((Class<? extends Shape>) check);
+			}
+		}
 		try {
-			supportedShapes = ex.supportedShape();			
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
+			inheritedclasses.add(classloading(new File("RoundRectangle.jar"), folder.replace('/', '.')));
+			// inheritedclasses.add(classloading(new File("DummyShape.jar"),
+			// folder.replace('/', '.')));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		supportedShapes.add(circle.class);
-		supportedShapes.add(ellipse.class);
-		supportedShapes.add(rectangle.class);
-		supportedShapes.add(square.class);
-		supportedShapes.add(lineSegment.class);
-		supportedShapes.add(triangle.class);
-		//System.out.println(Triangle.class.getName());
-		
-		return supportedShapes;
+
+		return inheritedclasses;
+//		externalJar ex = new externalJar();
+//		List<Class<? extends Shape>> supportedShapes = new ArrayList<>();
+//		try {
+//			supportedShapes = ex.supportedShape();
+//		} catch (ClassNotFoundException | IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		supportedShapes.add(circle.class);
+//		supportedShapes.add(ellipse.class);
+//		supportedShapes.add(rectangle.class);
+//		supportedShapes.add(square.class);
+//		supportedShapes.add(lineSegment.class);
+//		supportedShapes.add(triangle.class);
+//		// System.out.println(Triangle.class.getName());
+//
+//		return supportedShapes;
 	}
 
 	/**
@@ -193,8 +228,8 @@ public class DrawEngine implements DrawingEngine {
 	@Override
 	public void save(String path) {
 		// TODO Auto-generated method stub
-		if (path.contains(".XmL")) {
-			
+		if (path.contains(".XmL") || path.contains(".Xml")) {
+
 			final String paintStart = "<paint>";
 			final String paintEnd = "</paint>";
 			final String shapeStart = "<shape id=\"";
@@ -209,7 +244,7 @@ public class DrawEngine implements DrawingEngine {
 			final String xEnd = "</x>";
 			final String yStart = "<y>";
 			final String yEnd = "</y>";
-			
+
 			File saveXmL = new File(path);
 			try {
 				saveXmL.createNewFile();
@@ -244,11 +279,11 @@ public class DrawEngine implements DrawingEngine {
 					List<String> keys = new ArrayList<String>(shapes.get(i).getProperties().keySet());
 					String property = "";
 					for (int j = 0; j < shapes.get(i).getProperties().size(); j++) {
-						property += "<" + keys.get(j) + ">" + 
-						shapes.get(i).getProperties().get(keys.get(j)) + "</" + keys.get(j) + ">";
+						property += "<" + keys.get(j) + ">" + shapes.get(i).getProperties().get(keys.get(j)) + "</"
+								+ keys.get(j) + ">";
 						pw.println(property);
 						property = "";
-					}	
+					}
 				}
 				pw.println(mapEnd);
 				if (shapes.get(i).getColor() == null) {
@@ -265,11 +300,11 @@ public class DrawEngine implements DrawingEngine {
 			}
 			pw.println(paintEnd);
 			pw.close();
-			
+
 		} else if (path.contains(".JsOn")) {
 			String startShapeArray = "{\"ShapeArray\" :";
 			String startShape = "{ \"className\" :  \"";
-			
+
 			File saveXmL = new File(path);
 			try {
 				saveXmL.createNewFile();
@@ -304,13 +339,12 @@ public class DrawEngine implements DrawingEngine {
 					List<String> keys = new ArrayList<String>(shapes.get(i).getProperties().keySet());
 					String property = "\"";
 					for (int j = 0; j < shapes.get(i).getProperties().size(); j++) {
-						property += keys.get(j) + "\" : \"" + 
-						shapes.get(i).getProperties().get(keys.get(j)) + "\",";
+						property += keys.get(j) + "\" : \"" + shapes.get(i).getProperties().get(keys.get(j)) + "\",";
 						pw.println(property);
 						property = "\"";
-					}	
+					}
 				}
-				
+
 				if (shapes.get(i).getColor() == null) {
 					pw.println("\"color\" : \" -1\",");
 				} else {
@@ -321,7 +355,7 @@ public class DrawEngine implements DrawingEngine {
 				} else {
 					pw.println("\"fillcolor\" : \" " + shapes.get(i).getFillColor().getRGB() + "\",");
 				}
-				if (i == shapes.size()-1) {
+				if (i == shapes.size() - 1) {
 					pw.println("}");
 				} else {
 					pw.println("},");
@@ -339,33 +373,51 @@ public class DrawEngine implements DrawingEngine {
 	@Override
 	public void load(String path) {
 		File f1 = new File(path);
-		if ((f1.getName()).contains("XmL")) {
-			loadFromXmlFile(path);
-		} else if((f1.getName()).contains("JsOn")) {
-			loadFromJsonFile(path);
+		if ((f1.getName()).contains("XmL") || (f1.getName()).contains("Xml")) {
+			String shapeStartPattern = ".shape id=\"(\\D+)..";
+			String point = ".\\w.(-?\\d+)..\\w.";
+			String mapItemsPattern = ".(\\w+).(\\d+\\.\\d+)|(null)..(\\w+).";
+			String colorPattern = "<\\w+>(\\S+)</\\w+>";
+			/**
+			 * patterns contains: 0 -> class name 1 -> point x & y 2 -> map items 3 -> color
+			 */
+			ArrayList<String> patterns = new ArrayList<String>();
+			patterns.add(shapeStartPattern);
+			patterns.add(point);
+			patterns.add(mapItemsPattern);
+			patterns.add(colorPattern);
+			loadFromXmlFile(path, patterns);
+		} else if ((f1.getName()).contains("JsOn")) {
+			String shapeStartPattern = ".\"className\" :  .(\\D+)..";
+			String point = ".\\w. . .(-?\\d+)..";
+			String mapItemsPattern = ".(\\w+). . .((\\d+\\.\\d+)|(null))..";
+			String colorPattern01 = ".\\w+. . . (\\S+)..";
+			String colorPattern02 = ".\\w+. . . (\\S+).";
+			/**
+			 * patterns contains: 0 -> class name 1 -> point x & y 2 -> map items 3 -> color
+			 */
+			ArrayList<String> patterns = new ArrayList<String>();
+			patterns.add(shapeStartPattern);
+			patterns.add(point);
+			patterns.add(mapItemsPattern);
+			patterns.add(colorPattern01);
+			patterns.add(colorPattern02);
+			loadFromJsonFile(path, patterns);
 		} else {
 			return;
 		}
 	}
 
-	private void loadFromXmlFile(String path) {
-		
-		myShape shape = null;
-		String pointX = ".\\w.(-?\\d+)..\\w.";
-		String shapeStartPattern = ".shape id=\"(\\D+)..";
-		String mapItemsPattern = ".(\\w+).(\\d+\\.\\d+)..(\\w+).";
-		String colorPattern = "<\\w+>(\\S+)</\\w+>";
+	private void loadFromXmlFile(String path, ArrayList<String> patterns) {
+		shapes.clear();
+		undo.clear();
+		redo.clear();
+		Shape shape = null;
 		String stringFromRegex;
-		double value;
+		Double value = null;
 		Color color;
-		/**
-		 * patterns contains: 0 -> class name 1 -> point x & y
-		 */
-		ArrayList<String> patterns = new ArrayList<String>();
-		patterns.add(shapeStartPattern);
-		patterns.add(pointX);
-		patterns.add(mapItemsPattern);
 		Pattern p;
+		List<Class<? extends Shape>> mySupportedShapes = null;
 
 		try {
 			FileReader fr = new FileReader(path);
@@ -382,86 +434,78 @@ public class DrawEngine implements DrawingEngine {
 				Matcher xml = p.matcher(fromFile);
 				if (xml.find()) {
 					stringFromRegex = xml.group(1);
-					System.out.println(stringFromRegex);
-					Class<?> clazz;
+					mySupportedShapes = getSupportedShapes();
+					Class<?> clazz = null;
 					try {
 						clazz = Class.forName(stringFromRegex);
-						shape = (myShape) clazz.newInstance();
-						Map<String, Double> theMap = shape.getProperties();
-
-						Point thePoint = new Point();
-
-						/**
-						 * read point x.
-						 */
-						fromFile = br.readLine();
-						p = Pattern.compile(pointX);
-						xml = p.matcher(fromFile);
-						if (xml.find()) {
-							stringFromRegex = xml.group(1);
-							System.out.println(stringFromRegex);
-							thePoint.x = Integer.parseInt(stringFromRegex);
-						}
-
-						/**
-						 * read point y.
-						 */
-						fromFile = br.readLine();
-						p = Pattern.compile(pointX);
-						xml = p.matcher(fromFile);
-						if (xml.find()) {
-							stringFromRegex = xml.group(1);
-							System.out.println(stringFromRegex);
-							thePoint.y = Integer.parseInt(stringFromRegex);
-						}
-						shape.setPosition(thePoint);
-
-						/**
-						 * read the map.
-						 */
-						fromFile = br.readLine();
-
-						fromFile = br.readLine();
-						p = Pattern.compile(mapItemsPattern);
-						xml = p.matcher(fromFile);
-						while (true) {
+						shape = (Shape) clazz.newInstance();
+						if (mySupportedShapes.contains(clazz)) {
+							Map<String, Double> theMap = shape.getProperties();
+							Point thePoint = new Point();
+							/**
+							 * read point x.
+							 */
+							fromFile = br.readLine();
+							p = Pattern.compile(patterns.get(1));
+							xml = p.matcher(fromFile);
 							if (xml.find()) {
 								stringFromRegex = xml.group(1);
-								System.out.println(stringFromRegex);
-								value = Double.parseDouble(xml.group(2));
-								System.out.println(value);
-								theMap.put(stringFromRegex, value);
-							} else {
-								break;
+								thePoint.x = Integer.parseInt(stringFromRegex);
 							}
+							/**
+							 * read point y.
+							 */
 							fromFile = br.readLine();
+							p = Pattern.compile(patterns.get(1));
 							xml = p.matcher(fromFile);
+							if (xml.find()) {
+								stringFromRegex = xml.group(1);
+								thePoint.y = Integer.parseInt(stringFromRegex);
+							}
+							shape.setPosition(thePoint);
+							/**
+							 * read the map.
+							 */
+							fromFile = br.readLine();
+							fromFile = br.readLine();
+							p = Pattern.compile(patterns.get(2));
+							xml = p.matcher(fromFile);
+							while (true) {
+								if (xml.find()) {
+									stringFromRegex = xml.group(1);
+									if (xml.group(2) == null) {
+										value = null;
+									} else {
+										value = Double.parseDouble(xml.group(2));
+									}
+									theMap.put(stringFromRegex, value);
+								} else {
+									break;
+								}
+								fromFile = br.readLine();
+								xml = p.matcher(fromFile);
+							}
+							/**
+							 * read color.
+							 */
+							fromFile = br.readLine();
+							p = Pattern.compile(patterns.get(3));
+							xml = p.matcher(fromFile);
+							if (xml.find()) {
+								color = new Color(Integer.parseInt(xml.group(1)));
+								shape.setColor(color);
+							}
+							/**
+							 * read fill color.
+							 */
+							fromFile = br.readLine();
+							p = Pattern.compile(patterns.get(3));
+							xml = p.matcher(fromFile);
+							if (xml.find()) {
+								color = new Color(Integer.parseInt(xml.group(1)));
+								shape.setFillColor(color);
+							}
 						}
-
-						/**
-						 * read color.
-						 */
-						fromFile = br.readLine();
-						p = Pattern.compile(colorPattern);
-						xml = p.matcher(fromFile);
-						if (xml.find()) {
-							color = new Color(Integer.parseInt(xml.group(1)));
-							shape.setColor(color);
-							System.out.println(color);
-						}
-
-						/**
-						 * read fill color.
-						 */
-						fromFile = br.readLine();
-						p = Pattern.compile(colorPattern);
-						xml = p.matcher(fromFile);
-						if (xml.find()) {
-							color = new Color(Integer.parseInt(xml.group(1)));
-							shape.setFillColor(color);
-							System.out.println(color);
-						}
-
 					} catch (ClassNotFoundException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -484,8 +528,135 @@ public class DrawEngine implements DrawingEngine {
 		}
 	}
 
-	private void loadFromJsonFile(String path) {
-
+	private void loadFromJsonFile(String path, ArrayList<String> patterns) {
+		shapes.clear();
+		undo.clear();
+		redo.clear();
+		Shape shape = null;
+		String stringFromRegex;
+		Double value = null;
+		Color color;
+		Pattern p;
+		List<Class<? extends Shape>> mySupportedShapes = null;
+		try {
+			FileReader fr = new FileReader(path);
+			BufferedReader br = new BufferedReader(fr);
+			String fromFile;
+			fromFile = br.readLine();
+			fromFile = br.readLine();
+			while (true) {
+				/**
+				 * read class name.
+				 */
+				fromFile = br.readLine();
+				p = Pattern.compile(patterns.get(0));
+				Matcher xml = p.matcher(fromFile);
+				if (xml.find()) {
+					stringFromRegex = xml.group(1);
+					System.out.println(stringFromRegex);
+					mySupportedShapes = getSupportedShapes();
+					Class<?> clazz = null;
+					try {
+						clazz = Class.forName(stringFromRegex);
+						shape = (Shape) clazz.newInstance();
+						if (mySupportedShapes.contains(clazz)) {
+							Map<String, Double> theMap = shape.getProperties();
+							Point thePoint = new Point();
+							/**
+							 * read point x.
+							 */
+							fromFile = br.readLine();
+							p = Pattern.compile(patterns.get(1));
+							xml = p.matcher(fromFile);
+							if (xml.find()) {
+								stringFromRegex = xml.group(1);
+								System.out.println(stringFromRegex);
+								thePoint.x = Integer.parseInt(stringFromRegex);
+							}
+							/**
+							 * read point y.
+							 */
+							fromFile = br.readLine();
+							p = Pattern.compile(patterns.get(1));
+							xml = p.matcher(fromFile);
+							if (xml.find()) {
+								stringFromRegex = xml.group(1);
+								System.out.println(stringFromRegex);
+								thePoint.y = Integer.parseInt(stringFromRegex);
+							}
+							shape.setPosition(thePoint);
+							/**
+							 * read the map.
+							 */
+							fromFile = br.readLine();
+							p = Pattern.compile(patterns.get(2));
+							xml = p.matcher(fromFile);
+							while (!stringFromRegex.equals("color")) {
+								if (xml.find()) {
+									stringFromRegex = xml.group(1);
+									System.out.println(stringFromRegex);
+									if (xml.group(2).equals("null")) {
+										value = null;
+									} else {
+										value = Double.parseDouble(xml.group(2));
+									}
+									theMap.put(stringFromRegex, value);
+								} else {
+									break;
+								}
+								fromFile = br.readLine();
+								xml = p.matcher(fromFile);
+							}
+							/**
+							 * read color.
+							 */
+							p = Pattern.compile(patterns.get(3));
+							xml = p.matcher(fromFile);
+							if (xml.find()) {
+								System.out.println(xml.group(1));
+								color = new Color(Integer.parseInt(xml.group(1)));
+								shape.setColor(color);
+							}
+							/**
+							 * read fill color.
+							 */
+							fromFile = br.readLine();
+							p = Pattern.compile(patterns.get(4));
+							xml = p.matcher(fromFile);
+							if (xml.find()) {
+								System.out.println(xml.group(1));
+								color = new Color(Integer.parseInt(xml.group(1)));
+								shape.setFillColor(color);
+							}
+						}
+					} catch (ClassNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (InstantiationException | IllegalAccessException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} finally {
+					}
+					shapes.add(shape);
+					fromFile = br.readLine();
+				} else {
+					break;
+				}
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
+	private static Class<? extends Shape> classloading(File pathToJar, String packagename)
+			throws MalformedURLException, ClassNotFoundException {
+		URL[] urls = { new URL("jar:file:" + pathToJar + "!/") };
+		URLClassLoader cl = URLClassLoader.newInstance(urls);
+		String classname = pathToJar.getName().substring(0, pathToJar.getName().length() - 4);
+		@SuppressWarnings("unchecked")
+		Class<? extends Shape> s = (Class<? extends Shape>) cl.loadClass(packagename + "." + classname);
+		return s;
+	}
 }

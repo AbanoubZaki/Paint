@@ -6,14 +6,12 @@ public class myTest {
 
 	public static void main(String[] args) {
 		DrawEngine d = new DrawEngine();
-		
-		List <Class<? extends Shape>> shapes = d.getSupportedShapes();
-		System.out.println(shapes);
-		
-		
+		d.load("0.45651941812701_testDraw.JsOn");
+//		List <Class<? extends Shape>> shapes = d.getSupportedShapes();
+//		System.out.println(shapes);		
 //		Shape triangle = new triangle();
 //		Shape square = new square();
-		Shape circle = new circle();
+//		Shape circle = new circle();
 //		Shape ellipse = new ellipse();
 //		Shape line = new lineSegment();
 //		Shape rect = new rectangle();

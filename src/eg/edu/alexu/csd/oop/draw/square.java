@@ -4,9 +4,6 @@ import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 
-import eg.edu.alexu.csd.oop.draw.Shape;
-import eg.edu.alexu.csd.oop.draw.myShape;
-
 public class square extends myShape {
 
 	private Double length = new Double(0);

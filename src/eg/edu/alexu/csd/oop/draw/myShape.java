@@ -1,8 +1,9 @@
 package eg.edu.alexu.csd.oop.draw;
 
 import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Point;
+import java.util.HashMap;
+import java.util.Map;
 
 public class myShape implements Shape{
 
@@ -24,6 +25,11 @@ public class myShape implements Shape{
 	 */
 	boolean isTransparent = true;
 	
+	/**
+	 * map properties have empty position key.
+	 */
+	Map<String, Double> properties = new HashMap<>();
+	
 	public void setPosition(java.awt.Point position) {
 		this.position = position;
 	}
@@ -43,10 +49,11 @@ public class myShape implements Shape{
      */
     // update shape specific properties (e.g., radius)
     public void setProperties(java.util.Map<String, Double> properties) {
-    	
 	}
     public java.util.Map<String, Double> getProperties() {
-		return null;
+    	properties.put("positionX", position.getX());
+    	properties.put("positionY", position.getY());
+    	return properties;
 	}
 
     public void setColor(java.awt.Color color) {

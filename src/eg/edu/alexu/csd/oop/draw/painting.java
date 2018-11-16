@@ -147,7 +147,14 @@ public class painting extends JFrame{
 								
 								break;
 							}
-							engine.getShapes()[indices[i]].setProperties(properties);
+							try {
+								shape = (Shape) engine.getShapes()[indices[i]].clone();
+								shape.setProperties(properties);
+							} catch (CloneNotSupportedException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							
 						} else if (engine.getShapes()[indices[i]].toString().contains("triangle")) {
 							switch (e.getKeyCode()) {
 							case 37:
@@ -186,33 +193,51 @@ public class painting extends JFrame{
 								
 								break;
 							}
-							engine.getShapes()[indices[i]].setProperties(properties);
+							try {
+								shape = (Shape) engine.getShapes()[indices[i]].clone();
+								shape.setProperties(properties);
+							} catch (CloneNotSupportedException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+							
 						} else {
+							try {
+								shape = (Shape) engine.getShapes()[indices[i]].clone();
+							} catch (CloneNotSupportedException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
 							switch (e.getKeyCode()) {
 							case 37:
-								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
+								shape.setPosition(new Point(engine.getShapes()
 										[indices[i]].getPosition().x - movementSpeed, engine.getShapes()[indices[i]].getPosition().y));
 								break;
 							case 38:
-								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
+								shape.setPosition(new Point(engine.getShapes()
 										[indices[i]].getPosition().x, engine.getShapes()[indices[i]].getPosition().y - movementSpeed));
 								break;
 							case 39:
-								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
+								shape.setPosition(new Point(engine.getShapes()
 										[indices[i]].getPosition().x + movementSpeed, engine.getShapes()[indices[i]].getPosition().y));
 								break;
 							case 40:
-								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
+								shape.setPosition(new Point(engine.getShapes()
 										[indices[i]].getPosition().x, engine.getShapes()[indices[i]].getPosition().y + movementSpeed));
 								break;
 							default:
 								break;
 							}
 						}
+						engine.updateShape(engine.getShapes()[indices[i]], shape);
 					}
 					canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 					engine.refresh(canvas.getGraphics());
 				}
+			}
+			@Override
+			public void keyReleased(KeyEvent e) {
+				
 			}
 		});
 		canvas.addMouseMotionListener(new MouseMotionAdapter() {

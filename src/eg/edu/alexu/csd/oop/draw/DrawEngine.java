@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -424,7 +425,7 @@ public class DrawEngine implements DrawingEngine {
 						clazz = Class.forName(stringFromRegex);
 						shape = (Shape) clazz.newInstance();
 						if (mySupportedShapes.contains(clazz)) {
-							Map<String, Double> theMap = shape.getProperties();
+							Map<String, Double> theMap = new HashMap<String, Double>();
 							Point thePoint = new Point();
 							/**
 							 * read point x.
@@ -469,6 +470,7 @@ public class DrawEngine implements DrawingEngine {
 								fromFile = br.readLine();
 								xml = p.matcher(fromFile);
 							}
+							shape.setProperties(theMap);
 							/**
 							 * read color.
 							 */

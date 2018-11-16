@@ -6,13 +6,19 @@ import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Point;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import javax.swing.DefaultComboBoxModel;
@@ -21,9 +27,13 @@ import javax.swing.JColorChooser;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.MatteBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 @SuppressWarnings("serial")
 public class painting extends JFrame{
@@ -31,15 +41,21 @@ public class painting extends JFrame{
 	private JFrame frmPaint;
 	private DrawEngine engine = new DrawEngine();
 	private String selectedShape = new String("");
-	JComboBox<String> comboBox;
-	Canvas canvas;
-	Point position1, position2;
-	Shape shape;
-	ArrayList<Shape> shapes = new ArrayList<>();
-	JPanel frameColorPanel, fillColorPanel;
-	Color frameColor,fillColor;
-	boolean isColorFill = false;
-	
+	private JComboBox<String> comboBox;
+	private Canvas canvas;
+	private Point position1, position2;
+	private Shape shape;
+	private ArrayList<Shape> shapes = new ArrayList<>();
+	private String[] supportedShapesNames;
+	private int[] indices;
+	private List<Class<? extends Shape>> supportedShapes = new LinkedList<>();
+	private JPanel frameColorPanel, fillColorPanel;
+	private Color frameColor,fillColor; 
+	private boolean isColorFill = false;
+	private boolean resizePressed = false;
+	private JList<Shape> list;
+	private int movementSpeed = 6;
+  
 	/**
 	 * Launch the application.
 	 */
@@ -75,20 +91,134 @@ public class painting extends JFrame{
 		frmPaint = new JFrame();
 		frmPaint.setType(Type.POPUP);
 		frmPaint.setTitle("Paint");
-		frmPaint.setResizable(false);
-		frmPaint.setBounds(100, 100, 870, 494);
+		frmPaint.setBounds(100, 100, 1138, 548);
 		frmPaint.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JPanel panel = new JPanel();
 		panel.setBackground(new Color(230, 230, 250));
 		frmPaint.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
+
+		list = new JList();
+		list.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null),
+				"Shapes", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 128)));
+		list.setFont(new Font("Times New Roman", Font.ITALIC, 14));
+		list.setForeground(new Color(128, 0, 0));
+		list.setVisibleRowCount(25);
+		list.setBackground(SystemColor.inactiveCaption);
+		list.setBounds(830, 38, 291, 471);
+		panel.add(list);
 		
 		canvas = new Canvas();
+		canvas.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyPressed(KeyEvent e) {
+				if (list.getSelectedIndex() != -1) {
+					indices = list.getSelectedIndices();
+					Map<String, Double> properties = new HashMap<>();
+					for (int i = 0 ; i < indices.length; i++) {
+						if (engine.getShapes()[indices[i]].toString().contains("lineSegment")) {
+							switch (e.getKeyCode()) {
+							case 37:
+								properties.put("x1", engine.getShapes()[indices[i]].getProperties().get("x1") - movementSpeed);
+								properties.put("y1", engine.getShapes()[indices[i]].getProperties().get("y1"));
+								properties.put("x2", engine.getShapes()[indices[i]].getProperties().get("x2") - movementSpeed);
+								properties.put("y2", engine.getShapes()[indices[i]].getProperties().get("y2"));
+								break;
+							case 38:
+								properties.put("x1", engine.getShapes()[indices[i]].getProperties().get("x1"));
+								properties.put("y1", engine.getShapes()[indices[i]].getProperties().get("y1") - movementSpeed);
+								properties.put("x2", engine.getShapes()[indices[i]].getProperties().get("x2"));
+								properties.put("y2", engine.getShapes()[indices[i]].getProperties().get("y2") - movementSpeed);
+								break;
+							case 39:
+								properties.put("x1", engine.getShapes()[indices[i]].getProperties().get("x1") + movementSpeed);
+								properties.put("y1", engine.getShapes()[indices[i]].getProperties().get("y1"));
+								properties.put("x2", engine.getShapes()[indices[i]].getProperties().get("x2") + movementSpeed);
+								properties.put("y2", engine.getShapes()[indices[i]].getProperties().get("y2"));
+								break;
+							case 40:
+								properties.put("x1", engine.getShapes()[indices[i]].getProperties().get("x1"));
+								properties.put("y1", engine.getShapes()[indices[i]].getProperties().get("y1") + movementSpeed);
+								properties.put("x2", engine.getShapes()[indices[i]].getProperties().get("x2"));
+								properties.put("y2", engine.getShapes()[indices[i]].getProperties().get("y2") + movementSpeed);
+								break;
+							default:
+								
+								break;
+							}
+							engine.getShapes()[indices[i]].setProperties(properties);
+						} else if (engine.getShapes()[indices[i]].toString().contains("triangle")) {
+							switch (e.getKeyCode()) {
+							case 37:
+								properties.put("x1", engine.getShapes()[indices[i]].getProperties().get("x1") - movementSpeed);
+								properties.put("y1", engine.getShapes()[indices[i]].getProperties().get("y1"));
+								properties.put("x2", engine.getShapes()[indices[i]].getProperties().get("x2") - movementSpeed);
+								properties.put("y2", engine.getShapes()[indices[i]].getProperties().get("y2"));
+								properties.put("x3", engine.getShapes()[indices[i]].getProperties().get("x3") - movementSpeed);
+								properties.put("y3", engine.getShapes()[indices[i]].getProperties().get("y3"));
+								break;
+							case 38:
+								properties.put("x1", engine.getShapes()[indices[i]].getProperties().get("x1"));
+								properties.put("y1", engine.getShapes()[indices[i]].getProperties().get("y1") - movementSpeed);
+								properties.put("x2", engine.getShapes()[indices[i]].getProperties().get("x2"));
+								properties.put("y2", engine.getShapes()[indices[i]].getProperties().get("y2") - movementSpeed);
+								properties.put("x3", engine.getShapes()[indices[i]].getProperties().get("x3"));
+								properties.put("y3", engine.getShapes()[indices[i]].getProperties().get("y3") - movementSpeed);
+								break;
+							case 39:
+								properties.put("x1", engine.getShapes()[indices[i]].getProperties().get("x1") + movementSpeed);
+								properties.put("y1", engine.getShapes()[indices[i]].getProperties().get("y1"));
+								properties.put("x2", engine.getShapes()[indices[i]].getProperties().get("x2") + movementSpeed);
+								properties.put("y2", engine.getShapes()[indices[i]].getProperties().get("y2"));
+								properties.put("x3", engine.getShapes()[indices[i]].getProperties().get("x3") + movementSpeed);
+								properties.put("y3", engine.getShapes()[indices[i]].getProperties().get("y3"));
+								break;
+							case 40:
+								properties.put("x1", engine.getShapes()[indices[i]].getProperties().get("x1"));
+								properties.put("y1", engine.getShapes()[indices[i]].getProperties().get("y1") + movementSpeed);
+								properties.put("x2", engine.getShapes()[indices[i]].getProperties().get("x2"));
+								properties.put("y2", engine.getShapes()[indices[i]].getProperties().get("y2") + movementSpeed);
+								properties.put("x3", engine.getShapes()[indices[i]].getProperties().get("x3"));
+								properties.put("y3", engine.getShapes()[indices[i]].getProperties().get("y3") + movementSpeed);
+								break;
+							default:
+								
+								break;
+							}
+							engine.getShapes()[indices[i]].setProperties(properties);
+						} else {
+							switch (e.getKeyCode()) {
+							case 37:
+								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
+										[indices[i]].getPosition().x - movementSpeed, engine.getShapes()[indices[i]].getPosition().y));
+								break;
+							case 38:
+								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
+										[indices[i]].getPosition().x, engine.getShapes()[indices[i]].getPosition().y - movementSpeed));
+								break;
+							case 39:
+								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
+										[indices[i]].getPosition().x + movementSpeed, engine.getShapes()[indices[i]].getPosition().y));
+								break;
+							case 40:
+								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
+										[indices[i]].getPosition().x, engine.getShapes()[indices[i]].getPosition().y + movementSpeed));
+								break;
+							default:
+								break;
+							}
+						}
+					}
+					canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+					engine.refresh(canvas.getGraphics());
+				}
+			}
+		});
 		canvas.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				if (!selectedShape.equals("")) {
+				if (!selectedShape.equals("") && comboBox.getSelectedIndex() <= 6) {
 					position2 = e.getPoint();
 					int minX = Math.min(position1.x, position2.x);
 					int maxX = Math.max(position1.x, position2.x);
@@ -99,7 +229,12 @@ public class painting extends JFrame{
 					engine.refresh(canvas.getGraphics());
 					switch (selectedShape) {
 					case "circle":
-						properties.put("radius", position1.distance(position2));
+						if (resizePressed) {
+							properties.put("radius",
+									engine.getShapes()[list.getSelectedIndex()].getPosition().distance(position2));
+						} else {
+							properties.put("radius", position1.distance(position2));
+						}
 						break;
 					case "ellipse":
 						if (position2.x > position1.x && position2.y < position1.y) {
@@ -161,11 +296,14 @@ public class painting extends JFrame{
 						properties.put("y3", (double) position1.y);
 						break;
 					default:
+						
 						break;
 					}
 					
 					shape.setProperties(properties);
 					shape.draw(canvas.getGraphics());
+				} else if (resizePressed) {
+					
 				}
 			}
 		});
@@ -173,7 +311,7 @@ public class painting extends JFrame{
 		canvas.addMouseListener(new MouseAdapter() {	
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if (!selectedShape.equals("")) {
+				if (!selectedShape.equals("") && !resizePressed) {
 					position1 = e.getPoint();
 					switch (selectedShape) {
 					case "circle":
@@ -195,6 +333,7 @@ public class painting extends JFrame{
 						shapes.add(new triangle());
 						break;
 					default:
+						
 						break;
 					}
 					shape = shapes.get(shapes.size()-1);
@@ -203,29 +342,35 @@ public class painting extends JFrame{
 					if (isColorFill) {
 						shape.setFillColor(fillColor);
 					}
+				} else if (resizePressed) {
+					shape = engine.getShapes()[list.getSelectedIndex()];
 				}
 			}
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				if (!selectedShape.equals("")) {
+					shapes.clear();
 					/**
 					 * check if the user only clicked the screen without dragging.
 					 */
 					if (!(position1.x == e.getPoint().x && position1.y == e.getPoint().y)) {
 						engine.addShape(shape);
+						list.setListData(engine.getShapes());
 					}
+				} else if (resizePressed) {
+					
 				}
 			}
 		});
-		canvas.setBounds(10, 38, 844, 417);
+		canvas.setBounds(10, 38, 814, 471);
 		canvas.setBackground(Color.WHITE);
 		panel.add(canvas);
 		
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setToolTipText("Tool Bar");
 		menuBar.setBackground(new Color(95, 158, 160));
-		menuBar.setBounds(10, 11, 844, 21);
+		menuBar.setBounds(10, 11, 1049, 21);
 		panel.add(menuBar);
 		
 		JButton undo = new JButton("Undo");
@@ -250,8 +395,28 @@ public class painting extends JFrame{
 		load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				engine.load("C:\\Users\\Abanoub Ashraf\\Desktop\\paint project\\test save\\saved.XmL.txt");
+				engine.load("C:\\Users\\Abanoub Ashraf\\Desktop\\saved.XmL.txt");
+				System.out.println(engine.getShapes()[0].getPosition());
+				System.out.println(engine.getShapes()[0].getColor());
+				System.out.println(engine.getShapes()[0].getFillColor());
+				System.out.println(engine.getShapes()[0].getProperties());
+				
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new java.io.File("."));
+//				int option = chooser.showOpenDialog(frmPaint);
+			    chooser.setDialogTitle("Choose the file you want to load.");
+			    FileNameExtensionFilter f = new FileNameExtensionFilter("Paint Saved Files", "txt", "text");
+			    chooser.setFileFilter(f);
+			    chooser.setApproveButtonText("Load");
+				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+				   File selectedFile = chooser.getSelectedFile();
+				   String path = selectedFile.getAbsolutePath();
+				   engine.load(path);
+				}
+				canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				engine.refresh(canvas.getGraphics());
+				list.setListData(engine.getShapes());
+				
 			}
 		});
 		load.setBackground(new Color(70, 130, 180));
@@ -259,54 +424,60 @@ public class painting extends JFrame{
 		menuBar.add(load);
 		load.setFont(new Font("Times New Roman", Font.ITALIC, 12));
 		
-		JButton delete = new JButton("Delete");
-		delete.setBackground(new Color(70, 130, 180));
-		delete.setForeground(new Color(255, 255, 255));
-		menuBar.add(delete);
-		delete.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.setBackground(new Color(70, 130, 180));
+		btnDelete.setForeground(new Color(255, 255, 255));
+		menuBar.add(btnDelete);
+		btnDelete.setFont(new Font("Times New Roman", Font.ITALIC, 12));
 		
 		comboBox = new JComboBox<String>();
 		comboBox.setForeground(new Color(255, 255, 255));
 		comboBox.setBackground(new Color(70, 130, 180));
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				switch (comboBox.getSelectedIndex()) {
-				case 0:
-					
-					break;
-				case 1:
-					selectedShape = "circle";
-					break;
-				case 2:
-					selectedShape = "ellipse";
-					break;
-				case 3:
-					selectedShape = "lineSegment";
-					break;
-				case 4:
-					selectedShape = "square";
-					break;
-				case 5:
-					selectedShape = "rectangle";
-					break;
-				case 6:
-					selectedShape = "triangle";
-					break;
-				default:
-					break;
-				}
+				selectedShape = comboBox.getItemAt(comboBox.getSelectedIndex());
+				resizePressed = false;
 			}
 		});
 		
-		JButton clone = new JButton("Clone");
-		menuBar.add(clone);
-		clone.setForeground(Color.WHITE);
-		clone.setFont(new Font("Times New Roman", Font.ITALIC, 12));
-		clone.setBackground(new Color(70, 130, 180));
+		JButton btnCopy = new JButton("Copy");
+		btnCopy.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (list.getSelectedIndex() != -1) {
+					indices = list.getSelectedIndices();
+					try {
+						for (int i = 0; i < indices.length; i++) {
+							shape = (Shape) engine.getShapes()[indices[i]].clone();
+							engine.addShape(shape);
+						}
+						canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+						engine.refresh(canvas.getGraphics());
+						list.setListData(engine.getShapes());
+					} catch (CloneNotSupportedException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+		menuBar.add(btnCopy);
+		btnCopy.setForeground(Color.WHITE);
+		btnCopy.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		btnCopy.setBackground(new Color(70, 130, 180));
+		
+		JButton btnResize = new JButton("Resize");
+		btnResize.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				resizePressed = true;
+			}
+		});
+		btnResize.setForeground(Color.WHITE);
+		btnResize.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		btnResize.setBackground(new Color(70, 130, 180));
+		menuBar.add(btnResize);
 		menuBar.add(comboBox);
 		comboBox.setFont(new Font("Times New Roman", Font.ITALIC, 12));
 		comboBox.setMaximumRowCount(20);
-		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Select Shape", "Circle", "Ellipse", "LineSegment", "Square", "Rectangle", "Triangle"}));
+		comboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Select Shape", "circle", "ellipse", "lineSegment", "square", "rectangle", "triangle"}));
 		comboBox.setToolTipText("Draw");
 		
 		frameColorPanel = new JPanel();
@@ -326,6 +497,14 @@ public class painting extends JFrame{
 				JColorChooser chooser = new JColorChooser();
 				frameColor = JColorChooser.showDialog(null, "Select a color please." , Color.BLACK);
 				frameColorPanel.setBackground(frameColor);
+				if (list.getSelectedIndex() != -1) {
+					indices = list.getSelectedIndices();
+					for (int i = 0; i < indices.length; i++) {
+						engine.getShapes()[indices[i]].setColor(frameColor);
+					}
+					canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+					engine.refresh(canvas.getGraphics());
+				}
 			}
 		});
 		
@@ -345,6 +524,14 @@ public class painting extends JFrame{
 				isColorFill = true;
 				fillColor = JColorChooser.showDialog(null, "Select a color please." , Color.WHITE);
 				fillColorPanel.setBackground(fillColor);
+				if (list.getSelectedIndex() != -1) {
+					indices = list.getSelectedIndices();
+					for (int i = 0; i < indices.length; i++) {
+						engine.getShapes()[indices[i]].setFillColor(fillColor);
+					}
+					canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+					engine.refresh(canvas.getGraphics());
+				}
 			}
 		});
 		
@@ -359,20 +546,36 @@ public class painting extends JFrame{
 		button.setBackground(new Color(70, 130, 180));
 		button.setForeground(new Color(255, 255, 255));
 		button.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		
+		
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				engine.getSupportedShapes();
+				supportedShapes = engine.getSupportedShapes();
+				supportedShapesNames  = new String[supportedShapes.size() + 1];
+				supportedShapesNames[0] = "Select Shape";
+				for (int i = 0; i < supportedShapes.size(); i++) {
+					supportedShapesNames[i+1] = supportedShapes.get(i).getSimpleName();
+				}
+				comboBox.setModel(new DefaultComboBoxModel<String>(supportedShapesNames));
 			}
 		});
 		refresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				engine.refresh(canvas.getGraphics());
+				list.setListData(engine.getShapes());
 			}
 		});
-		delete.addActionListener(new ActionListener() {
+		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				if (list.getSelectedIndex() != -1) {
+					int index = list.getSelectedIndex();
+					shape = engine.getShapes()[index];
+					engine.removeShape(shape);
+					canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+					engine.refresh(canvas.getGraphics());
+					list.setListData(engine.getShapes());
+				}
 			}
 		});
 		save.addActionListener(new ActionListener() {
@@ -381,9 +584,8 @@ public class painting extends JFrame{
 			    chooser.setCurrentDirectory(new java.io.File("."));
 			    chooser.setDialogTitle("Choose the destination you want to save in.");
 			    chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			    chooser.setApproveButtonText("Save");
 			    chooser.setAcceptAllFileFilterUsed(false);
-//			    FileNameExtensionFilter f = new FileNameExtensionFilter("TEXT FILES", "txt", "text");
-//			    chooser.setFileFilter(f);
 			    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 			      System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
 			      engine.save(chooser.getSelectedFile() + "\\saved.XmL.txt");
@@ -400,6 +602,7 @@ public class painting extends JFrame{
 				canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				engine.redo();
 				engine.refresh(canvas.getGraphics());
+				list.setListData(engine.getShapes());
 			}
 		});
 		undo.addActionListener(new ActionListener() {
@@ -407,6 +610,7 @@ public class painting extends JFrame{
 				canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				engine.undo();
 				engine.refresh(canvas.getGraphics());
+				list.setListData(engine.getShapes());
 			}
 		});
 	 

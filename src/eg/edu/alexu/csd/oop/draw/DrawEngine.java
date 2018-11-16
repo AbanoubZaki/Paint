@@ -115,6 +115,7 @@ public class DrawEngine implements DrawingEngine {
 		return ArrayOfShapes;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<Class<? extends Shape>> getSupportedShapes() {
 		List<Class<? extends Shape>> inheritedclasses = new LinkedList<>();
@@ -134,7 +135,7 @@ public class DrawEngine implements DrawingEngine {
 				e.printStackTrace();
 			}
 
-			if (isshape && !f.getName().contains("MyShape")) {
+			if (isshape && !f.getName().contains("myShape")) {
 				inheritedclasses.add((Class<? extends Shape>) check);
 			}
 		}

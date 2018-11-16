@@ -76,11 +76,16 @@ public class triangle extends myShape {
 	 */
 	public Object clone() throws CloneNotSupportedException {
 		triangle copy = new triangle();
-		copy.setPosition(new Point(getPosition().x, getPosition().y));
+		copy.setPosition(new Point(getPosition().x + 10, getPosition().y + 10));
 		copy.setColor(getColor());
 		copy.setFillColor(getFillColor());
 		Map <String, Double> propertiesCopy = new HashMap<String, Double>();
-		propertiesCopy.putAll(getProperties());
+		propertiesCopy.put("x1", getProperties().get("x1") + 10);
+		propertiesCopy.put("y1", getProperties().get("y1") + 10);
+		propertiesCopy.put("x2", getProperties().get("x2") + 10);
+		propertiesCopy.put("y2", getProperties().get("y2") + 10);
+		propertiesCopy.put("x3", getProperties().get("x3") + 10);
+		propertiesCopy.put("y3", getProperties().get("y3") + 10);
 		copy.setProperties(propertiesCopy);
 		return copy;
 	} // create a deep clone of the shape

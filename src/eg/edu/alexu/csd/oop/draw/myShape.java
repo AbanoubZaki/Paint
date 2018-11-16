@@ -35,7 +35,7 @@ public class myShape implements Shape{
 	}
 	
     public java.awt.Point getPosition() {
-    	if (position.equals(null)) {
+    	if (position == null) {
 			return null;
 		}
 		return position;
@@ -60,7 +60,7 @@ public class myShape implements Shape{
     	this.frameColor = color;
 	}
     public java.awt.Color getColor() {
-    	if (frameColor.equals(null)) {
+    	if (frameColor == null) {
     		return null;
     	}
 		return frameColor;
@@ -72,7 +72,7 @@ public class myShape implements Shape{
 	}
     
     public java.awt.Color getFillColor() {
-    	if (fillColor.equals(null) || isTransparent == true) {
+    	if (fillColor == null || isTransparent == true) {
     		return null;
     	}
 		return fillColor;

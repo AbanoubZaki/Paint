@@ -546,7 +546,7 @@ public class DrawEngine implements DrawingEngine {
 						clazz = Class.forName(stringFromRegex);
 						shape = (Shape) clazz.newInstance();
 						if (mySupportedShapes.contains(clazz)) {
-							Map<String, Double> theMap = shape.getProperties();
+							Map<String, Double> theMap = new HashMap<>();
 							Point thePoint = new Point();
 							/**
 							 * read point x.
@@ -593,6 +593,7 @@ public class DrawEngine implements DrawingEngine {
 								fromFile = br.readLine();
 								xml = p.matcher(fromFile);
 							}
+							shape.setProperties(theMap);
 							/**
 							 * read color.
 							 */

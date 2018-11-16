@@ -420,12 +420,6 @@ public class painting extends JFrame{
 		load.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				engine.load("C:\\Users\\Abanoub Ashraf\\Desktop\\saved.XmL.txt");
-				System.out.println(engine.getShapes()[0].getPosition());
-				System.out.println(engine.getShapes()[0].getColor());
-				System.out.println(engine.getShapes()[0].getFillColor());
-				System.out.println(engine.getShapes()[0].getProperties());
-				
 				JFileChooser chooser = new JFileChooser();
 				chooser.setCurrentDirectory(new java.io.File("."));
 //				int option = chooser.showOpenDialog(frmPaint);
@@ -434,9 +428,14 @@ public class painting extends JFrame{
 			    chooser.setFileFilter(f);
 			    chooser.setApproveButtonText("Load");
 				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-				   File selectedFile = chooser.getSelectedFile();
-				   String path = selectedFile.getAbsolutePath();
-				   engine.load(path);
+					File selectedFile = chooser.getSelectedFile();
+					String path = selectedFile.getAbsolutePath();
+					engine.load(path);
+					System.out.println(engine.getShapes()[0].getPosition());
+					System.out.println(engine.getShapes()[0].getColor());
+					System.out.println(engine.getShapes()[0].getFillColor());
+					System.out.println(engine.getShapes()[0].getProperties());
+					
 				}
 				canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				engine.refresh(canvas.getGraphics());

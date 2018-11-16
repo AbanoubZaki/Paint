@@ -27,7 +27,7 @@ public class circle extends myShape {
 		// TODO Auto-generated method stub
 		if (getFillColor() != null) {
 			canvas.setColor(getFillColor());
-			canvas.fillOval(getPosition().x, getPosition().y, (int) Math.round(radius), (int) Math.round(radius));
+			canvas.fillOval(getPosition().x, getPosition().y, (int) Math.round(properties.get("radius")), (int) Math.round(properties.get("radius")));
 		}
 		canvas.setColor(getColor());
 		canvas.drawOval(getPosition().x, getPosition().y, (int) Math.round(radius), (int) Math.round(radius));

@@ -361,7 +361,7 @@ public class DrawEngine implements DrawingEngine {
 		if ((f1.getName()).contains("XmL") || (f1.getName()).contains("Xml")) {
 			String shapeStartPattern = ".shape id=\"(\\D+)..";
 			String point = ".\\w.(-?\\d+)..\\w.";
-			String mapItemsPattern = ".(\\w+).(\\d+\\.\\d+)|(null)..(\\w+).";
+			String mapItemsPattern = ".(\\w+).((\\d+\\.\\d+)|(null))..(\\w+).";
 			String colorPattern = "<\\w+>(\\S+)</\\w+>";
 			/**
 			 * patterns contains: 0 -> class name 1 -> point x & y 2 -> map items 3 -> color
@@ -458,8 +458,9 @@ public class DrawEngine implements DrawingEngine {
 							while (true) {
 								if (xml.find()) {
 									stringFromRegex = xml.group(1);
-									if (xml.group(2) == null) {
-										value = null;
+									System.out.println(stringFromRegex);
+									if (xml.group(2).equals("null")) {
+										value = -1.0;
 									} else {
 										value = Double.parseDouble(xml.group(2));
 									}
@@ -582,7 +583,7 @@ public class DrawEngine implements DrawingEngine {
 									stringFromRegex = xml.group(1);
 									System.out.println(stringFromRegex);
 									if (xml.group(2).equals("null")) {
-										value = null;
+										value = -1.0;
 									} else {
 										value = Double.parseDouble(xml.group(2));
 									}

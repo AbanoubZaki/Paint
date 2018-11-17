@@ -731,9 +731,8 @@ public class painting extends JFrame{
 			    chooser.setAcceptAllFileFilterUsed(false);
 			    if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 			      System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
-			      
-			      engine.save(chooser.getSelectedFile() + "\\saved.XmL.txt");
-			      engine.save(chooser.getSelectedFile() + "\\saved.JsOn.txt");
+			      engine.save(chooser.getSelectedFile() + "\\" + Math.random() + "saved.XmL.txt");
+			      engine.save(chooser.getSelectedFile() + "\\" + Math.random() + "saved.JsOn.txt");
 			      System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
 			    } else {
 			      System.out.println("No Selection ");

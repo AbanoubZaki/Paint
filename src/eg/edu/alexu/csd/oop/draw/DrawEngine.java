@@ -377,7 +377,7 @@ public class DrawEngine implements DrawingEngine {
 			String point = ".\\w. . .(-?\\d+)..";
 			String mapItemsPattern = ".(\\w+). . .((\\d+\\.\\d+)|(null))..";
 			String colorPattern01 = ".\\w+. . . (\\S+)..";
-			String colorPattern02 = ".\\w+. . . (\\S+)..";
+			String colorPattern02 = ".\\w+. . . (\\S+)..?";
 			/**
 			 * patterns contains: 0 -> class name 1 -> point x & y 2 -> map items 3 -> color
 			 */

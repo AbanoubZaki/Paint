@@ -1,0 +1,38 @@
+<paint>
+<shape id="eg.edu.alexu.csd.oop.draw.RoundRectangle">
+<x>80</x>
+<y>80</y>
+<map>
+<Length>80.0</Length>
+<ArcWidth>30.0</ArcWidth>
+<ArcLength>30.0</ArcLength>
+<Width>908.0</Width>
+</map>
+<color>-16777216</color>
+<fillcolor>-16764109</fillcolor>
+</shape>
+<shape id="eg.edu.alexu.csd.oop.draw.RoundRectangle">
+<x>-184</x>
+<y>284</y>
+<map>
+<Length>80.0</Length>
+<ArcWidth>30.0</ArcWidth>
+<ArcLength>30.0</ArcLength>
+<Width>908.0</Width>
+</map>
+<color>-16777216</color>
+<fillcolor>-16764109</fillcolor>
+</shape>
+<shape id="eg.edu.alexu.csd.oop.draw.RoundRectangle">
+<x>308</x>
+<y>122</y>
+<map>
+<Length>80.0</Length>
+<ArcWidth>30.0</ArcWidth>
+<ArcLength>30.0</ArcLength>
+<Width>908.0</Width>
+</map>
+<color>-6684775</color>
+<fillcolor>-16737895</fillcolor>
+</shape>
+</paint>

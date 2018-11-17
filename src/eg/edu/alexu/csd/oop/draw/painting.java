@@ -5,10 +5,8 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
-import java.awt.Rectangle;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -23,9 +21,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
@@ -60,9 +56,9 @@ public class painting extends JFrame{
 	private JPanel frameColorPanel, fillColorPanel;
 	private Color frameColor,fillColor; 
 	private boolean isColorFill = false;
+	private boolean resizePressed = false;
 	private JList<Shape> list;
 	private int movementSpeed = 6;
-	int index = -1;
   
 	/**
 	 * Launch the application.
@@ -107,7 +103,7 @@ public class painting extends JFrame{
 		frmPaint.getContentPane().add(panel, BorderLayout.CENTER);
 		panel.setLayout(null);
 
-		list = new JList<Shape>();
+		list = new JList();
 		list.setBorder(new TitledBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null),
 				"Shapes", TitledBorder.CENTER, TitledBorder.TOP, null, new Color(0, 0, 128)));
 		list.setFont(new Font("Times New Roman", Font.ITALIC, 14));
@@ -155,14 +151,7 @@ public class painting extends JFrame{
 								
 								break;
 							}
-							try {
-								shape = (Shape) engine.getShapes()[indices[i]].clone();
-								shape.setProperties(properties);
-							} catch (CloneNotSupportedException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							
+							engine.getShapes()[indices[i]].setProperties(properties);
 						} else if (engine.getShapes()[indices[i]].toString().contains("triangle")) {
 							switch (e.getKeyCode()) {
 							case 37:
@@ -201,50 +190,35 @@ public class painting extends JFrame{
 								
 								break;
 							}
-							try {
-								shape = (Shape) engine.getShapes()[indices[i]].clone();
-								shape.setProperties(properties);
-							} catch (CloneNotSupportedException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
-							
+							engine.getShapes()[indices[i]].setProperties(properties);
 						} else {
-							try {
-								shape = (Shape) engine.getShapes()[indices[i]].clone();
-							} catch (CloneNotSupportedException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
 							switch (e.getKeyCode()) {
 							case 37:
-								shape.setPosition(new Point(engine.getShapes()
+								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
 										[indices[i]].getPosition().x - movementSpeed, engine.getShapes()[indices[i]].getPosition().y));
 								break;
 							case 38:
-								shape.setPosition(new Point(engine.getShapes()
+								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
 										[indices[i]].getPosition().x, engine.getShapes()[indices[i]].getPosition().y - movementSpeed));
 								break;
 							case 39:
-								shape.setPosition(new Point(engine.getShapes()
+								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
 										[indices[i]].getPosition().x + movementSpeed, engine.getShapes()[indices[i]].getPosition().y));
 								break;
 							case 40:
-								shape.setPosition(new Point(engine.getShapes()
+								engine.getShapes()[indices[i]].setPosition(new Point(engine.getShapes()
 										[indices[i]].getPosition().x, engine.getShapes()[indices[i]].getPosition().y + movementSpeed));
 								break;
 							default:
 								break;
 							}
 						}
-						engine.updateShape(engine.getShapes()[indices[i]], shape);
 					}
 					canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 					engine.refresh(canvas.getGraphics());
 				}
 			}
 		});
-
 		canvas.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
@@ -259,7 +233,12 @@ public class painting extends JFrame{
 					engine.refresh(canvas.getGraphics());
 					switch (selectedShape) {
 					case "circle":
-						properties.put("radius", position1.distance(position2));
+						if (resizePressed) {
+							properties.put("radius",
+									engine.getShapes()[list.getSelectedIndex()].getPosition().distance(position2));
+						} else {
+							properties.put("radius", position1.distance(position2));
+						}
 						break;
 					case "ellipse":
 						if (position2.x > position1.x && position2.y < position1.y) {
@@ -334,9 +313,12 @@ public class painting extends JFrame{
 		canvas.addMouseListener(new MouseAdapter() {	
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if (!selectedShape.equals("")) {
+				if (!selectedShape.equals("") && !resizePressed) {
 					position1 = e.getPoint();
 					switch (selectedShape) {
+					case "Select Shape":
+						
+						break;
 					case "circle":
 						shapes.add(new circle());
 						break;
@@ -356,7 +338,7 @@ public class painting extends JFrame{
 						shapes.add(new triangle());
 						break;
 					default:
-						
+												
 						break;
 					}
 					shape = shapes.get(shapes.size()-1);
@@ -365,6 +347,8 @@ public class painting extends JFrame{
 					if (isColorFill) {
 						shape.setFillColor(fillColor);
 					}
+				} else if (resizePressed) {
+					shape = engine.getShapes()[list.getSelectedIndex()];
 				}
 			}
 			
@@ -379,6 +363,8 @@ public class painting extends JFrame{
 						engine.addShape(shape);
 						list.setListData(engine.getShapes());
 					}
+				} else if (resizePressed) {
+					
 				}
 			}
 		});
@@ -422,14 +408,9 @@ public class painting extends JFrame{
 			    chooser.setFileFilter(f);
 			    chooser.setApproveButtonText("Load");
 				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-					File selectedFile = chooser.getSelectedFile();
-					String path = selectedFile.getAbsolutePath();
-					engine.load(path);
-					System.out.println(engine.getShapes()[0].getPosition());
-					System.out.println(engine.getShapes()[0].getColor());
-					System.out.println(engine.getShapes()[0].getFillColor());
-					System.out.println(engine.getShapes()[0].getProperties());
-					
+				   File selectedFile = chooser.getSelectedFile();
+				   String path = selectedFile.getAbsolutePath();
+				   engine.load(path);
 				}
 				canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 				engine.refresh(canvas.getGraphics());
@@ -454,6 +435,93 @@ public class painting extends JFrame{
 		comboBox.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				selectedShape = comboBox.getItemAt(comboBox.getSelectedIndex());
+				if (comboBox.getSelectedIndex() > 6) {
+					Class<?> clazz = null;
+					
+					try {
+						clazz = Class.forName("eg.edu.alexu.csd.oop.draw." + selectedShape);
+						shape = (Shape) clazz.newInstance();
+						ArrayList<String> propertiesOfShape = new ArrayList<>(shape.getProperties().keySet());
+						
+						final JFrame frame = new JFrame("");
+					    frame.getContentPane().setLayout(new GridLayout(propertiesOfShape.size()+3, 2));
+
+					    frame.setBounds(300, 200, 340, 65*propertiesOfShape.size());
+					    SwingUtilities.invokeLater(new Runnable() {
+					        @Override public void run() {
+					            frame.setVisible(true);
+					        }
+					    });
+						
+					    JLabel x = new JLabel("x");
+					    JLabel y = new JLabel("y");
+					    x.setFont(new Font("Times New Roman", Font.ITALIC, 24));
+					    y.setFont(new Font("Times New Roman", Font.ITALIC, 24));
+					    
+					    JTextArea inputy = new JTextArea();
+					    JTextArea inputx = new JTextArea();
+					    
+					    frame.getContentPane().add(x);
+						frame.getContentPane().add(inputx);
+						frame.validate();
+	                    frame.repaint();
+					    
+	                    frame.getContentPane().add(y);
+						frame.getContentPane().add(inputy);
+						frame.validate();
+	                    frame.repaint();
+	                    
+						JLabel[] property = new JLabel[propertiesOfShape.size()];
+						JTextArea[] inputs = new JTextArea[propertiesOfShape.size()];
+						int i = 0;
+						for ( String key : shape.getProperties().keySet() ) {
+						    System.out.println( key );
+							property[i] = new JLabel(key);
+							property[i].setFont(new Font("Times New Roman", Font.ITALIC, 24));
+							property[i].setBounds(10, 50, 80, 35);
+							inputs[i] = new JTextArea();
+							inputs[i].setBounds(50, 50, 50, 50);
+							
+							frame.getContentPane().add(property[i]);
+							frame.getContentPane().add(inputs[i]);
+							frame.validate();
+		                    frame.repaint();
+		                    i++;
+						}
+						
+						JButton ok = new JButton("Ok");
+						ok.addActionListener(new ActionListener() {
+							@Override
+							public void actionPerformed(ActionEvent e) {
+								Point thePoint = new Point(); 
+								thePoint.x = Integer.parseInt(inputx.getText());
+								thePoint.y = Integer.parseInt(inputy.getText());
+								shape.setPosition(thePoint);
+								int i = 0;
+								for (String key : shape.getProperties().keySet()) {
+									properties.put(key, Double.parseDouble(inputs[i].getText()));
+									i++;
+								}
+								shape.setProperties(properties);
+								shape.setColor(frameColor);
+								shape.setFillColor(fillColor);
+								engine.addShape(shape);
+								canvas.getGraphics().clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+								engine.refresh(canvas.getGraphics());
+								list.setListData(engine.getShapes());
+								frame.removeAll();//or remove(JComponent)
+								frame.dispose();
+							}
+						});
+						ok.setForeground(Color.WHITE);
+						ok.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+						ok.setBackground(new Color(70, 130, 180));
+						frame.getContentPane().add(ok);
+					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
 			}
 		});
 		
@@ -550,6 +618,7 @@ public class painting extends JFrame{
 		btnResize.setFont(new Font("Times New Roman", Font.ITALIC, 12));
 		btnResize.setBackground(new Color(70, 130, 180));
 		menuBar.add(btnResize);
+
 		menuBar.add(comboBox);
 		comboBox.setFont(new Font("Times New Roman", Font.ITALIC, 12));
 		comboBox.setMaximumRowCount(20);
@@ -570,7 +639,7 @@ public class painting extends JFrame{
 		menuBar.add(btnFrameColor);
 		btnFrameColor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new JColorChooser();
+				JColorChooser chooser = new JColorChooser();
 				frameColor = JColorChooser.showDialog(null, "Select a color please." , Color.BLACK);
 				frameColorPanel.setBackground(frameColor);
 				if (list.getSelectedIndex() != -1) {
@@ -596,7 +665,7 @@ public class painting extends JFrame{
 		menuBar.add(btnFillColor);
 		btnFillColor.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new JColorChooser();
+				JColorChooser chooser = new JColorChooser();
 				isColorFill = true;
 				fillColor = JColorChooser.showDialog(null, "Select a color please." , Color.WHITE);
 				fillColorPanel.setBackground(fillColor);

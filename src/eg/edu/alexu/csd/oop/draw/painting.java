@@ -313,7 +313,7 @@ public class painting extends JFrame{
 		canvas.addMouseListener(new MouseAdapter() {	
 			@Override
 			public void mousePressed(MouseEvent e) {
-				if (!selectedShape.equals("") && !resizePressed) {
+				if (!selectedShape.equals("") && !resizePressed && comboBox.getSelectedIndex() <= 6) {
 					position1 = e.getPoint();
 					switch (selectedShape) {
 					case "Select Shape":
@@ -354,7 +354,7 @@ public class painting extends JFrame{
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				if (!selectedShape.equals("")) {
+				if (!selectedShape.equals("") && comboBox.getSelectedIndex() <= 6) {
 					shapes.clear();
 					/**
 					 * check if the user only clicked the screen without dragging.
@@ -363,8 +363,6 @@ public class painting extends JFrame{
 						engine.addShape(shape);
 						list.setListData(engine.getShapes());
 					}
-				} else if (resizePressed) {
-					
 				}
 			}
 		});

@@ -490,7 +490,12 @@ public class painting extends JFrame {
 					Class<?> clazz = null;
 
 					try {
-						clazz = Class.forName("eg.edu.alexu.csd.oop.draw." + selectedShape);
+						for (int i = 0; i < DrawEngine.getInstance().getSupportedShapes().size(); i++) {
+							System.out.println(DrawEngine.getInstance().getSupportedShapes().get(i).getCanonicalName());
+							if (DrawEngine.getInstance().getSupportedShapes().get(i).getCanonicalName().contains(selectedShape)) {
+								clazz = DrawEngine.getInstance().getSupportedShapes().get(i);
+							}
+						}
 						shape = (Shape) clazz.newInstance();
 						ArrayList<String> propertiesOfShape = new ArrayList<>(shape.getProperties().keySet());
 
@@ -570,7 +575,7 @@ public class painting extends JFrame {
 						ok.setFont(new Font("Times New Roman", Font.ITALIC, 12));
 						ok.setBackground(new Color(70, 130, 180));
 						frame.getContentPane().add(ok);
-					} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e1) {
+					} catch (InstantiationException | IllegalAccessException e1) {
 						e1.printStackTrace();
 					}
 				}
@@ -775,6 +780,17 @@ public class painting extends JFrame {
 
 		button.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				JFileChooser chooser = new JFileChooser();
+				chooser.setCurrentDirectory(new java.io.File("."));
+				// int option = chooser.showOpenDialog(frmPaint);
+				chooser.setDialogTitle("Choose the Jar you want to load.");
+				chooser.setApproveButtonText("Load Jar");
+				if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+					File selectedFile = chooser.getSelectedFile();
+					String path = selectedFile.getAbsolutePath();
+					System.out.println(path);
+					DrawEngine.getInstance().JarPath = path;
+				}
 				supportedShapes = DrawEngine.getInstance().getSupportedShapes();
 				supportedShapesNames = new String[supportedShapes.size() + 1];
 				supportedShapesNames[0] = "Select Shape";

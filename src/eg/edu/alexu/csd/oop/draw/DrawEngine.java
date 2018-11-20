@@ -2,7 +2,6 @@ package eg.edu.alexu.csd.oop.draw;
 
 import java.awt.Graphics;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -24,12 +23,12 @@ public class DrawEngine implements DrawingEngine {
 	/**
 	 * boolean for undoRedo methods
 	 */
-	boolean boolForUndoRedo = false;
+	private boolean boolForUndoRedo = false;
 
 	/**
 	 * current shapes.
 	 */
-	public ArrayList<Shape> shapes = new ArrayList<>();
+	private ArrayList<Shape> shapes = new ArrayList<>();
 
 	/**
 	 * 2 stacks for undo and redo.
@@ -39,6 +38,8 @@ public class DrawEngine implements DrawingEngine {
 	 * this stack is cleared
 	 */
 	private Stack<operationDone> redo = new Stack<>();
+	
+	public String JarPath = "";
 	
 	@Override
 	public void refresh(Graphics canvas) {
@@ -136,20 +137,27 @@ public class DrawEngine implements DrawingEngine {
 				inheritedclasses.add((Class<? extends Shape>) check);
 			}
 		}
-		/**
-		 * get external jar classes that inherits from shape interface.
-		 */
-		List<Class<? extends Shape>> externalInheritedclasses = new LinkedList<>();
-		try {
-			externalInheritedclasses = externalJar.getInstance().supportedShape();
-			for (int i = 0; i < externalInheritedclasses.size(); i++) {
-				inheritedclasses.add(externalInheritedclasses.get(i));
-			}
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if (JarPath.equals("")) {
+			inheritedclasses.add((Class<? extends Shape>) externalJar.getInstance().installPluginShape("RoundRectangle.jar"));
+		} else {
+			inheritedclasses.add((Class<? extends Shape>) externalJar.getInstance().installPluginShape(JarPath));
+			path = null;
 		}
+		
+//		/**
+//		 * get external jar classes that inherits from shape interface.
+//		 */
+//		List<Class<? extends Shape>> externalInheritedclasses = new LinkedList<>();
+//		try {
+//			externalInheritedclasses = externalJar.getInstance().supportedShape();
+//			for (int i = 0; i < externalInheritedclasses.size(); i++) {
+//				inheritedclasses.add(externalInheritedclasses.get(i));
+//			}
+//		} catch (ClassNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 //		String folder = "eg/edu/alexu/csd/oop/draw";
 //		ClassLoader loader = ClassLoader.getSystemClassLoader();// this.getClass().getClassLoader();//Thread.currentThread().getContextClassLoader();
 //		URL url = loader.getResource(folder);
@@ -260,47 +268,12 @@ public class DrawEngine implements DrawingEngine {
 		List<Class<? extends Shape>> mySupportedShapes = getSupportedShapes();
 		File f1 = new File(path);
 		if ((f1.getName()).contains("XmL") || (f1.getName()).contains("Xml")) {
-			String shapeStartPattern = ".shape id=\"(\\D+)..";
-			String point = ".\\w.(-?\\d+)..\\w.";
-			String mapItemsPattern = ".(\\w+).((\\d+\\.\\d+)|(null))..(\\w+).";
-			String colorPattern = "<\\w+>(\\S+)</\\w+>";
-			/**
-			 * patterns contains: 0 -> class name 1 -> point x & y 2 -> map items 3 -> color
-			 */
-			ArrayList<String> patterns = new ArrayList<String>();
-			patterns.add(shapeStartPattern);
-			patterns.add(point);
-			patterns.add(mapItemsPattern);
-			patterns.add(colorPattern);
-			shapes = SaveAndLoad.getInstance().loadFromXmlFile(path, patterns, mySupportedShapes);
+			shapes = SaveAndLoad.getInstance().loadFromXmlFile(path, mySupportedShapes);
 		} else if ((f1.getName()).contains("JsOn")) {
-			String shapeStartPattern = ".\"className\" :  .(\\D+)..";
-			String point = ".\\w. . .(-?\\d+)..";
-			String mapItemsPattern = ".(\\w+). . .((\\d+\\.\\d+)|(null))..";
-			String colorPattern01 = ".\\w+. . . (\\S+)..";
-			String colorPattern02 = ".\\w+. . . (-\\d+)..?";
-			/**
-			 * patterns contains: 0 -> class name 1 -> point x & y 2 -> map items 3 -> color
-			 */
-			ArrayList<String> patterns = new ArrayList<String>();
-			patterns.add(shapeStartPattern);
-			patterns.add(point);
-			patterns.add(mapItemsPattern);
-			patterns.add(colorPattern01);
-			patterns.add(colorPattern02);
-			shapes = SaveAndLoad.getInstance().loadFromJsonFile(path, patterns, mySupportedShapes);
+			shapes = SaveAndLoad.getInstance().loadFromJsonFile(path, mySupportedShapes);
 		} else {
 			return;
 		}
 	}
 
-//	private static Class<? extends Shape> classloading(File pathToJar, String packagename)
-//			throws MalformedURLException, ClassNotFoundException {
-//		URL[] urls = { new URL("jar:file:" + pathToJar + "!/") };
-//		URLClassLoader cl = URLClassLoader.newInstance(urls);
-//		String classname = pathToJar.getName().substring(0, pathToJar.getName().length() - 4);
-//		@SuppressWarnings("unchecked")
-//		Class<? extends Shape> s = (Class<? extends Shape>) cl.loadClass(packagename + "." + classname);
-//		return s;
-//	}
 }

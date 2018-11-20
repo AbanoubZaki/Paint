@@ -4,8 +4,6 @@ import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
 
-import eg.edu.alexu.csd.oop.draw.myShape;
-
 public class ellipse extends myShape {
 
 	private Double horizontalRadius = 0.0 ;
@@ -27,7 +25,6 @@ public class ellipse extends myShape {
 	
 	@Override
 	public void draw(java.awt.Graphics canvas) {
-		// TODO Auto-generated method stub
 		if (getFillColor() != null) {
 			canvas.setColor(getFillColor());
 			canvas.fillOval(getPosition().x, getPosition().y, (int) Math.round(horizontalRadius), (int) Math.round(verticalRadius));

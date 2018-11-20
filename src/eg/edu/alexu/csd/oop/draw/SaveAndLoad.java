@@ -20,8 +20,8 @@ public class SaveAndLoad {
 
 	// singelton pattern.
 
-	private static SaveAndLoad instance = new SaveAndLoad();	
-	
+	private static SaveAndLoad instance = new SaveAndLoad();
+
 	private SaveAndLoad() {
 
 	}
@@ -167,8 +167,19 @@ public class SaveAndLoad {
 
 	}
 
-	public ArrayList<Shape> loadFromXmlFile(String path, ArrayList<String> patterns,
-			List<Class<? extends Shape>> mySupportedShapes) {
+	public ArrayList<Shape> loadFromXmlFile(String path, List<Class<? extends Shape>> mySupportedShapes) {
+		String shapeStartPattern = ".shape id=\"(\\D+)..";
+		String point = ".\\w.(-?\\d+)..\\w.";
+		String mapItemsPattern = ".(\\w+).((\\d+\\.\\d+)|(null))..(\\w+).";
+		String colorPattern = "<\\w+>(\\S+)</\\w+>";
+		/**
+		 * patterns contains: 0 -> class name 1 -> point x & y 2 -> map items 3 -> color
+		 */
+		ArrayList<String> patterns = new ArrayList<String>();
+		patterns.add(shapeStartPattern);
+		patterns.add(point);
+		patterns.add(mapItemsPattern);
+		patterns.add(colorPattern);
 		Shape shape = null;
 		String stringFromRegex;
 		Double value = null;
@@ -192,9 +203,14 @@ public class SaveAndLoad {
 					stringFromRegex = xml.group(1);
 					Class<?> clazz = null;
 					try {
-						clazz = Class.forName(stringFromRegex);
-						shape = (Shape) clazz.newInstance();
+						for (int i = 0; i < mySupportedShapes.size(); i++) {
+							System.out.println(mySupportedShapes.get(i).getCanonicalName());
+							if (stringFromRegex.equals(mySupportedShapes.get(i).getCanonicalName())) {
+								clazz = mySupportedShapes.get(i);
+							}
+						}
 						if (mySupportedShapes.contains(clazz)) {
+							shape = (Shape) clazz.newInstance();
 							Map<String, Double> theMap = new HashMap<String, Double>();
 							Point thePoint = new Point();
 							/**
@@ -262,8 +278,6 @@ public class SaveAndLoad {
 								shape.setFillColor(color);
 							}
 						}
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
 					} catch (InstantiationException | IllegalAccessException e) {
 						e.printStackTrace();
 					} finally {
@@ -283,8 +297,21 @@ public class SaveAndLoad {
 		return shapes;
 	}
 
-	public ArrayList<Shape> loadFromJsonFile(String path, ArrayList<String> patterns,
-			List<Class<? extends Shape>> mySupportedShapes) {
+	public ArrayList<Shape> loadFromJsonFile(String path, List<Class<? extends Shape>> mySupportedShapes) {
+		String shapeStartPattern = ".\"className\" :  .(\\D+)..";
+		String point = ".\\w. . .(-?\\d+)..";
+		String mapItemsPattern = ".(\\w+). . .((\\d+\\.\\d+)|(null))..";
+		String colorPattern01 = ".\\w+. . . (\\S+)..";
+		String colorPattern02 = ".\\w+. . . (-\\d+)..?";
+		/**
+		 * patterns contains: 0 -> class name 1 -> point x & y 2 -> map items 3 -> color
+		 */
+		ArrayList<String> patterns = new ArrayList<String>();
+		patterns.add(shapeStartPattern);
+		patterns.add(point);
+		patterns.add(mapItemsPattern);
+		patterns.add(colorPattern01);
+		patterns.add(colorPattern02);
 		Shape shape = null;
 		String stringFromRegex;
 		Double value = null;
@@ -308,9 +335,14 @@ public class SaveAndLoad {
 					stringFromRegex = xml.group(1);
 					Class<?> clazz = null;
 					try {
-						clazz = Class.forName(stringFromRegex);
-						shape = (Shape) clazz.newInstance();
+						for (int i = 0; i < mySupportedShapes.size(); i++) {
+							System.out.println(mySupportedShapes.get(i).getCanonicalName());
+							if (stringFromRegex.equals(mySupportedShapes.get(i).getCanonicalName())) {
+								clazz = mySupportedShapes.get(i);
+							}
+						}
 						if (mySupportedShapes.contains(clazz)) {
+							shape = (Shape) clazz.newInstance();
 							Map<String, Double> theMap = new HashMap<>();
 							Point thePoint = new Point();
 							/**
@@ -381,8 +413,6 @@ public class SaveAndLoad {
 								shape.setFillColor(color);
 							}
 						}
-					} catch (ClassNotFoundException e) {
-						e.printStackTrace();
 					} catch (InstantiationException | IllegalAccessException e) {
 						e.printStackTrace();
 					} finally {
@@ -399,7 +429,7 @@ public class SaveAndLoad {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		return shapes;
 	}
 }

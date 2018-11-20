@@ -137,7 +137,7 @@ public class DrawEngine implements DrawingEngine {
 				inheritedclasses.add((Class<? extends Shape>) check);
 			}
 		}
-		if (JarPath.equals("")) {
+		if (JarPath.equals("") || !JarPath.contains(".jar")) {
 			inheritedclasses.add((Class<? extends Shape>) externalJar.getInstance().installPluginShape("RoundRectangle.jar"));
 		} else {
 			inheritedclasses.add((Class<? extends Shape>) externalJar.getInstance().installPluginShape(JarPath));

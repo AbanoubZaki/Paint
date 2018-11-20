@@ -426,7 +426,7 @@ public class painting extends JFrame {
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setToolTipText("Tool Bar");
 		menuBar.setBackground(new Color(95, 158, 160));
-		menuBar.setBounds(10, 11, 1049, 21);
+		menuBar.setBounds(10, 11, 1092, 21);
 		panel.add(menuBar);
 
 		JButton undo = new JButton("Undo");
@@ -772,13 +772,25 @@ public class painting extends JFrame {
 		menuBar.add(refresh);
 		refresh.setFont(new Font("Times New Roman", Font.ITALIC, 12));
 
-		JButton button = new JButton("Import Shapes");
-		menuBar.add(button);
-		button.setBackground(new Color(70, 130, 180));
-		button.setForeground(new Color(255, 255, 255));
-		button.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		JButton importShapes = new JButton("Import Shapes");
+		menuBar.add(importShapes);
+		importShapes.setBackground(new Color(70, 130, 180));
+		importShapes.setForeground(new Color(255, 255, 255));
+		importShapes.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		
+		JButton help = new JButton("Help?");
+		help.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Help window = new Help();
+				window.frame.setVisible(true);
+			}
+		});
+		help.setForeground(Color.WHITE);
+		help.setFont(new Font("Times New Roman", Font.ITALIC, 12));
+		help.setBackground(new Color(70, 130, 180));
+		menuBar.add(help);
 
-		button.addActionListener(new ActionListener() {
+		importShapes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
 				chooser.setCurrentDirectory(new java.io.File("."));

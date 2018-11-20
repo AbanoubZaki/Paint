@@ -5,8 +5,6 @@ import java.util.List;
 public class myTest {
 
 	public static void main(String[] args) {
-		DrawEngine d = new DrawEngine();
-		System.out.println(d.getSupportedShapes());
 		
 	}
 }

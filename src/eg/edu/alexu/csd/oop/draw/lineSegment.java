@@ -60,10 +60,10 @@ public class lineSegment extends myShape {
 		copy.setColor(getColor());
 		copy.setFillColor(getFillColor());
 		Map <String, Double> propertiesCopy = new HashMap<String, Double>();
-		propertiesCopy.put("x1", getProperties().get("x1") + 10);
-		propertiesCopy.put("y1", getProperties().get("y1") + 10);
-		propertiesCopy.put("x2", getProperties().get("x2") + 10);
-		propertiesCopy.put("y2", getProperties().get("y2") + 10);
+		propertiesCopy.put("x1", getProperties().get("x1") );
+		propertiesCopy.put("y1", getProperties().get("y1") );
+		propertiesCopy.put("x2", getProperties().get("x2") );
+		propertiesCopy.put("y2", getProperties().get("y2") );
 		copy.setProperties(propertiesCopy);
 		return copy;
 	}

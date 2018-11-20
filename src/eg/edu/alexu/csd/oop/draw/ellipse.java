@@ -56,7 +56,7 @@ public class ellipse extends myShape {
 	public Object clone() throws CloneNotSupportedException {
 		// TODO Auto-generated method stub
 		ellipse copy = new ellipse();
-		copy.setPosition(new Point(getPosition().x + 10, getPosition().y + 10));
+		copy.setPosition(new Point(getPosition().x, getPosition().y));
 		copy.setColor(getColor());
 		copy.setFillColor(getFillColor());
 		Map <String, Double> propertiesCopy = new HashMap<String, Double>();
